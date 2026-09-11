@@ -393,6 +393,88 @@
       ]
     }
   },
+  "frequency": {
+    "q3_daily": {
+      "plan_cost": 13568930.464133102,
+      "up_cost": 0.0,
+      "down_cost": 0.0,
+      "emergency_kwh": 77341.10639332337,
+      "emergency_cost": 441424.5407051699,
+      "total_cost": 14010355.004838279,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_06": {
+      "plan_cost": 13564779.70773366,
+      "up_cost": 222258.12216848938,
+      "down_cost": 0.0,
+      "emergency_kwh": 50079.90513026063,
+      "emergency_cost": 271493.6606617324,
+      "total_cost": 14058531.490563884,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_noon": {
+      "plan_cost": 13564736.912509494,
+      "up_cost": 90225.86654939558,
+      "down_cost": 0.0,
+      "emergency_kwh": 56081.77119153825,
+      "emergency_cost": 296745.50849943754,
+      "total_cost": 13951708.287558343,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_018": {
+      "plan_cost": 13565441.207998417,
+      "up_cost": 67516.12132774152,
+      "down_cost": 0.0,
+      "emergency_kwh": 50030.5023137639,
+      "emergency_cost": 255551.47966381267,
+      "total_cost": 13888508.80898998,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_0612": {
+      "plan_cost": 13564732.205888072,
+      "up_cost": 144493.0631205821,
+      "down_cost": 0.0,
+      "emergency_kwh": 48028.7278390938,
+      "emergency_cost": 257195.36803768057,
+      "total_cost": 13966420.637046354,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_01218": {
+      "plan_cost": 13564340.976401674,
+      "up_cost": 105527.32384169806,
+      "down_cost": 0.0,
+      "emergency_kwh": 49190.96495434723,
+      "emergency_cost": 249880.3802180568,
+      "total_cost": 13919748.680461446,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3_0618": {
+      "plan_cost": 13564289.269406488,
+      "up_cost": 241587.20348089188,
+      "down_cost": 0.0,
+      "emergency_kwh": 41227.18899681946,
+      "emergency_cost": 211053.73602373296,
+      "total_cost": 14016930.208911117,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    },
+    "q3": {
+      "plan_cost": 13564340.976401674,
+      "up_cost": 159758.4409960623,
+      "down_cost": 0.0,
+      "emergency_kwh": 41147.370736125005,
+      "emergency_cost": 210396.15691663403,
+      "total_cost": 13934495.57431439,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485
+    }
+  },
   "q1_saving_percent": 26.898121762870165,
   "q2_risk_saving_percent": 13.34257914607071,
   "q3_frequency_saving_percent": 0.5414525934402947,

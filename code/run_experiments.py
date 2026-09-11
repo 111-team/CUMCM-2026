@@ -31,6 +31,12 @@ def main():
       'q3':{'kind':3},
       'q3_daily':{'kind':3,'updates':(0,)},
       'q3_noon':{'kind':3,'updates':(0,12)},
+      # 预报时刻消融：固定0时基准，逐一识别6、12、18时的独立及组合贡献。
+      'q3_06':{'kind':3,'updates':(0,6)},
+      'q3_018':{'kind':3,'updates':(0,18)},
+      'q3_0612':{'kind':3,'updates':(0,6,12)},
+      'q3_01218':{'kind':3,'updates':(0,12,18)},
+      'q3_0618':{'kind':3,'updates':(0,6,18)},
       'q3_refund':{'kind':3,'settlement':'refund'},
       'q4_2':{'price_mode':'forecast'},
       'q4_3':{'kind':3,'price_mode':'forecast'},

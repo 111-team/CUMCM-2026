@@ -2,9 +2,11 @@
 \centering\small
 \caption{固定常规购电计划下的储能反馈对照（2--12月）}
 \label{tab:feedback_benchmark}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrrrr}\toprule
 反馈规则 & 总费用/元 & 紧急购电/kWh & 末日SOC/kWh & 较便宜日期 & 较贵日期 \\\midrule
 即时优先放电 & 13863865.66 & 85480.79 & 1552.80 & - & - \\
 36时段预测缺额保留 & 14738750.63 & 265119.13 & 1552.80 & 20 & 214 \\
-\bottomrule\end{tabular}
+\bottomrule\end{tabular}%
+}
 \end{table}
