@@ -1,0 +1,503 @@
+% !TeX program = xelatex
+% 以本目录为工作目录，连续运行两次 xelatex main.tex。
+\documentclass[UTF8,a4paper,zihao=-4]{ctexart}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,graphicx,float}
+\usepackage{enumitem,caption,subcaption,fancyhdr,xcolor,listings,tikz,hyperref,etoolbox}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\hypersetup{hidelinks,unicode=true,pdftitle={基于历史误差场景与滚动优化的微网购电及储能调控策略}}
+\ctexset{section={format=\centering\heiti\large,name={,、},number=\chinese{section},beforeskip=16pt,afterskip=9pt},subsection={format=\heiti\normalsize,beforeskip=11pt,afterskip=5pt},subsubsection={format=\heiti\normalsize,beforeskip=8pt,afterskip=4pt}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\setcounter{secnumdepth}{3}
+\linespread{1.12}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+\clubpenalty=10000\widowpenalty=10000\displaywidowpenalty=10000
+\patchcmd{\thebibliography}{\section*}{\section}{}{}
+\setlist{nosep,leftmargin=2em}
+\captionsetup{font=small,labelfont=bf,labelsep=quad,skip=5pt}
+\setlength{\textfloatsep}{10pt}
+\setlength{\intextsep}{9pt}
+\pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
+\newcommand{\pos}[1]{\left[#1\right]_+}
+\newcommand{\dd}{\Delta t}
+\newcommand{\Emin}{E_{\min}}
+\newcommand{\Emax}{E_{\max}}
+\newcommand{\unit}[1]{\,\mathrm{#1}}
+\lstset{language=Python,basicstyle=\ttfamily\fontsize{8.2}{10}\selectfont,commentstyle=\color{black!65},keywordstyle=\bfseries,showstringspaces=false,breaklines=true,breakatwhitespace=false,columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\tiny\color{gray},numbersep=5pt,frame=single,rulecolor=\color{black!20},tabsize=4,xleftmargin=1.5em,framexleftmargin=1em}
+\begin{document}
+\begin{center}
+{\zihao{3}\heiti 基于历史误差场景与滚动优化的\\微网购电及储能调控策略}\par
+\vspace{0.7em}{\zihao{4}\heiti 摘\quad 要}
+\end{center}
+微网调控需要协调光伏出力、用电负荷和储能状态，在满足供电需求的同时控制计划交易、紧急补电及日内调整费用。针对预测误差与电价变化，本文构建由单日确定性调度、历史误差场景计划和日内滚动调整组成的优化框架，并利用2025年数据进行连续运行检验。
+
+针对问题1，以购电费用最小为目标，将功率平衡、充放电效率、容量与功率限制及日初日末电量相等条件写为线性约束，采用HiGHS求解器求解。允许合理处理盈余电量，并通过保持储能状态不变的等价变换消除同时充放电。所得全天购电量为59482.70千瓦时，购电费为35126.95元，较无储能就地消纳方案降低26.90\%。
+
+针对问题2，先利用1月份数据选择历史预测方法，再将近期净负荷误差构造成场景，把五倍电价的缺额惩罚纳入日前目标。运行时根据实际净功率进行充放电安全裁剪与紧急补电，并将日末实际电量传递至次日。2月至12月总费用为13863865.66元，紧急购电量为85480.79千瓦时，较点预测日前基准降低总费用13.34\%。
+
+针对问题3，在四个预报发布时刻更新光伏信息，针对未执行时段重新优化，以当天零时计划统一计算偏差费用。主结算口径下总费用为13934495.57元，较仅使用零时预报降低0.54\%，紧急购电量降低46.80\%；但相较问题2总费用略增，表明更新收益需与交易成本共同衡量。
+
+针对问题4，分别检验电价需要预测和日前电价已知两种信息设定。可实施的价格预测方案中，日前与滚动策略总费用分别为14621415.17元和14711757.51元。进一步比较退购结算解释与场景窗口，揭示费用口径对策略排序的影响。全部主模型均满足逐时功率平衡、储能边界与跨日连续性，形成了信息时序明确、费用可复算的微网调控方案。
+
+\vspace{0.8em}\noindent\textbf{关键词：}线性规划；历史误差场景；滚动优化；储能调度；信息可得性
+\newpage
+
+\section{问题背景与重述}
+\subsection{问题背景}
+\subsubsection{微网结构与调控目标}
+微网通过协调小区负荷、光伏发电、储能设备和外部电网，实现分布式能源的本地利用。光伏出力具有明显的日内变化，用电负荷与电价的峰谷也不完全同步，因此仅凭当前供需差额购电，难以充分发挥储能的经济价值。合理的调控策略应在低价或光伏富余时补充储能，在负荷较高或购电较贵时释放电能，同时保留对预测误差的应对能力。
+
+\subsubsection{调度尺度与交易机制}
+本文以10分钟为一个调度时段，每日划分144个时段。日前计划确定全天常规购电安排；当实际供电不足时，按交易时刻电价的5倍紧急补电；获得新光伏预报后，可针对未执行时段调整计划，并承担相应偏差费用。购电量与储能电量均以kWh计，功率以kW计，费用以元计。
+
+\subsection{四个问题的核心任务}
+\subsubsection{问题1：单日确定性调度}
+依据附件1给出的日内电价、负载和光伏预测，制定一天的购电及储能充放电计划。在供电满足负荷、储能安全运行且日初日末电量均为6000 kWh的条件下，最小化购电费，并给出题目指定时段的电量、全天费用以及完整结果文件。
+
+\subsubsection{问题2：全年日前计划与紧急补电}
+在每天重复使用附件1日内电价曲线的条件下，处理全年负荷和光伏实际出力变化。每天零时只能利用当时已有的信息制定计划，运行中对供电缺额紧急补电。需要连续模拟储能状态，报告四个指定日期和2025年2月1日至12月31日的完整结果。
+
+\subsubsection{问题3：预测更新与购电调整}
+利用每天0、6、12、18时发布的未来24小时整点光伏预报，更新尚未执行时段的购电安排。在统一计划基准下处理上调购电和下调违约费用，比较不同预报使用频率的成本，判断引入日内更新的实际价值。
+
+\subsubsection{问题4：波动电价下的策略比较}
+采用附件4的逐日电价重新计算问题2和问题3。除替换结算价格外，还需明确未来电价能否在日前获知。本文以历史价格预测驱动的策略作为可实施主方案，并设置当天电价已知的对照，分析价格信息对购电、储能与总费用的作用。
+
+\section{问题分析}
+\subsection{整体思路及四问联系}
+\subsubsection{由基础物理模型到动态决策}
+四个问题共用功率平衡和储能动态约束。问题1提供无预测偏差条件下的基础模型；问题2增加全年运行跨度、历史预测和紧急补电惩罚；问题3进一步增加光伏预报更新及计划调整费用；问题4在同一物理框架上考虑逐日电价变化和价格信息限制。四问分别检验模型的经济性、连续性、适应性与信息依赖程度。
+
+需要区分两类概念：问题1至3使用的电价并非全天常数，而是每天重复的\textbf{日内变化曲线}；问题4的电价则随日期和时段共同变化。另外，已有一条波动价格曲线不等于未来价格在决策时已知。将这两点分开，有助于避免把事后信息优势误认为优化算法的改进。
+
+\subsubsection{预测、计划、执行与评价闭环}
+基本流程如图\ref{fig:flow}所示。预测层产生未来净负荷及误差场景；计划层确定常规购电和名义储能轨迹；执行层依据实际供需进行安全反馈；评价层使用实际交易价格核算费用并更新历史误差。真实未来数据仅用于事后评价，不能反向参与已生成的可实施计划。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=6mm,box/.style={draw,rounded corners=2pt,align=center,text width=11.6cm,minimum height=8mm,font=\small},>=Stealth]
+\node[box] (a) {历史负荷、光伏和价格；当前储电量；已发布光伏预报};
+\node[box,below=of a] (b) {历史预测与误差场景：统一时间索引，限定信息可得范围};
+\node[box,below=of b] (c) {零时日前LP：购电安排、名义充放电及场景缺额};
+\node[box,below=of c] (d) {6、12、18时：更新光伏预测，优化剩余时段，锁定已执行安排};
+\node[box,below=of d] (e) {逐10分钟运行：充放电安全裁剪、紧急补电、盈余处理};
+\node[box,below=of e] (f) {实际费用结算；日末实际储电量传递到次日；记录结果};
+\foreach \s/\t in {a/b,b/c,c/d,d/e,e/f}\draw[->] (\s)--(\t);
+\end{tikzpicture}
+\caption{统一建模与运行流程；问题1不执行误差场景和日内更新步骤}\label{fig:flow}
+\end{figure}
+
+\subsection{各问题的关键难点}
+\subsubsection{问题1：功率、效率与储能边界}
+储能约束将不同时段耦合，充电输入和放电输出又存在效率损失，因此不能仅按价格排序独立决策。还应区分功率值与时段电量，并明确储电量属于时段边界状态。光伏富余时若既不允许售电又不允许弃电，单纯的等式平衡可能导致不必要的不可行或耗能循环，需要建立明确的盈余处理机制。
+
+\subsubsection{问题2：日前未知量与跨日连续性}
+附件2提供实际量而非日前预测。直接把当天全部实际负荷和光伏输入零时优化，会利用未来信息，并削弱紧急购电问题本身的意义。本文从历史数据构造预测，把缺额风险纳入目标，再将\textbf{实际执行后的电量}作为次日初值。名义日末状态只用于当天优化，不能替代实际状态。
+
+\subsubsection{问题3：预测发布时序与费用基准}
+同一未来时段可能经历多轮优化。若每次都把新旧计划差异重复计入全年费用，将产生重复结算。本文固定以零时计划为基准，只对最终生效的常规购电量结算一次偏差费用。退购是否退还原电费存在解释空间，因此主模型与敏感性模型分别采用两种明示口径。
+
+\subsubsection{问题4：价格信息与结果可比性}
+波动电价影响原计划费、紧急费及调整费的全部系数。可实施策略只能使用历史预测价格，而实际费用必须用实际价格计算。比较方案时还需要报告统计期初末储能状态，防止把消耗额外初始库存形成的成本差异全部归因于策略优越性。
+
+\section{模型假设}
+\subsection{物理运行假设}
+\subsubsection{离散功率与能量损耗}
+假设每个10分钟时段内功率保持恒定，\(\dd=1/6\) h。按题目提供的效率口径，取充电效率与放电效率分别为\(\eta_c=\eta_d=0.9\)，故完整充放电回路效率为0.81；除储能效率损失外，忽略线路损耗、自放电、启停损耗及辅助设备耗电。充放电量采用交流母线侧口径。
+
+\subsubsection{单向购电与盈余处理}
+外网连接只允许非负购电，不引入未给出的售电收益及购电功率上限。光伏可优先分配给负荷，剩余用于充电；超过负荷和可充电能力的供给允许弃光或不予利用。已经承诺的购电电量仍按相应合同规则付费。盈余变量不代表可售电量，也不产生收益。实际执行阶段不同时充放电。
+
+\subsection{决策与交易假设}
+\subsubsection{信息可得性与预测使用}
+每次决策可获得当前储电量、此前实际数据和已经发布的预报。未发生的负载、实际光伏与实际价格不能用于可实施计划。附件3整点预报以线性插值扩展到10分钟尺度，插值起点使用发布时刻刚完成的时段观测。1月份用于初始化和预测方法选择，2月至12月为报告期，不以报告期结果重新选择主预测方法。
+
+\subsubsection{结算基准与边界条件}
+问题1固定日初日末均为6000 kWh；问题2至4只固定2025年1月1日零时初值为6000 kWh，不附加逐日循环边界。主结算口径保留原计划全额电费，并增加上调费用及下调违约费；另一口径退回取消电量的原电费后收取50\%违约费。两种口径均以当天零时计划为基准，实际紧急购电另按5倍交易电价结算。对购电不足的实时反馈优先维持负荷供给，不为追踪名义充电计划额外紧急购电。
+
+\section{符号说明}
+\subsection{索引、输入参数与决策变量}
+\subsubsection{日期、时段及输入参数}
+令日期索引\(d=1,\ldots,365\)，报告期为\(\mathcal D=\{32,\ldots,365\}\)；时段索引\(t=1,\ldots,144\)，\(t=1\)对应0:00--0:10，状态\(E_{d,t}\)为第\(t\)个时段结束时的电量，\(E_{d,0}\)为零时电量。发布时刻\(k\in\{0,6,12,18\}\)，误差场景索引为\(s\)。单日推导省略日期下标。
+\begin{center}\small
+\begin{longtable}{p{3.7cm}p{8.0cm}p{2.0cm}}
+\toprule 符号 & 说明 & 单位\\\midrule\endfirsthead
+\toprule 符号 & 说明 & 单位\\\midrule\endhead
+\(P_{\mathrm{load},d,t},P_{\mathrm{pv},d,t}\) & 实际负载功率、实际光伏功率 & kW\\
+\(\widehat P_{\mathrm{load},d,t}\) & 当日零时形成的负载预测 & kW\\
+\(\widehat P_{\mathrm{pv},d,t}^{(k)}\) & 发布时刻\(k\)对应的光伏预测 & kW\\
+\(n_{d,t},\widehat n_{d,t}^{(k)}\) & 实际净负荷、预测净负荷，均为负载减光伏 & kW\\
+\(n_{d,t,s}^{(k)}\) & 场景净负荷 & kW\\
+\(\lambda_{d,t},\widehat\lambda_{d,t}\) & 实际交易电价、日前预测电价 & 元/kWh\\
+\(\eta_c,\eta_d\) & 充电、放电效率，均为0.9 & --\\
+\(\dd\) & 时间步长，等于1/6 & h\\
+\(\Emin,\Emax\) & 允许储电量下限1200、上限10800 & kWh\\
+\(P_{\max}\) & 最大充电、放电功率，均为5000 & kW\\
+\(P_{\mathrm{grid},d,t}^{0}\) & 零时原始计划购电功率 & kW\\
+\(P_{\mathrm{grid},d,t}\) & 最终生效的常规购电功率，不含紧急补电 & kW\\
+\(P_{\mathrm{ch},d,t},P_{\mathrm{dis},d,t}\) & 母线侧充电输入、放电输出功率 & kW\\
+\(E_{d,t}\) & 实际或模型中明确指定的边界储电量 & kWh\\
+\(P_{\mathrm{em},d,t}\) & 实际紧急购电功率 & kW\\
+\(P_{\mathrm{sp},d,t}\) & 弃光或未利用的已付费供给功率 & kW\\
+\(u_{d,t,s}\) & 计划模型中的场景缺额补救变量 & kW\\
+\(y_{d,t}^{+},y_{d,t}^{-}\) & 相对零时计划的上调、下调功率 & kW\\
+\(C_{\mathrm{total}}\) & 报告期实际总费用 & 元\\
+\bottomrule
+\end{longtable}\end{center}
+\subsubsection{计划状态与实际状态的区分}
+优化阶段的充放电变量与状态描述名义储能计划；实际执行时，以反馈规则重新计算充放电与状态。必要时分别加上标\(\mathrm{pl}\)和\(\mathrm{act}\)。场景缺额\(u\)只是优化目标中的风险代理量，不与实际紧急功率\(P_{\mathrm{em}}\)混用。
+
+\subsection{费用与储能利用指标}
+\subsubsection{费用分项}
+定义原计划费用\(C_0\)、上调费用\(C_+\)、下调净费用\(C_-\)与实际紧急费用\(C_{\mathrm{em}}\)，总费用为
+\begin{equation}\label{eq:total}
+C_{\mathrm{total}}=C_0+C_++C_-+C_{\mathrm{em}}.
+\end{equation}
+主口径中\(C_-\ge0\)；退费口径下\(C_-\le0\)，表示退费与违约费合并后的净减少额，不应解释为负的违约单价。
+\subsubsection{等效循环指标}
+为统一表征储能使用强度，定义基于9600 kWh可用容量的能量吞吐等效循环次数
+\begin{equation}\label{eq:cycle}
+N_{\mathrm{eq}}=\frac{\sum_{d\in\mathcal D,t}\bigl(\eta_cP_{\mathrm{ch},d,t}+P_{\mathrm{dis},d,t}/\eta_d\bigr)\dd}{2(\Emax-\Emin)}.
+\end{equation}
+该量是运行强度指标，不直接等同于寿命模型中的电池循环计数，也不用于假设额外的折旧成本。
+
+\section{数据处理与分析}
+\subsection{数据统一与时间对齐}
+\subsubsection{附件结构与完整性检验}
+附件1有144行10分钟数据；附件2的负荷与实际光伏各有365天、每天144个数值；附件3共1460条预报，每条包含24个未来整点值；附件4有365组144时段电价。程序核查数组维度、日期唯一性、数值有限性和非负性，所读数值均通过检查。附件1电价范围为0.3713--1.3952元/kWh，附件4范围为0.0076--1.7936元/kWh。
+
+\subsubsection{时段映射与模板标签修正}
+原始输入的时间字段从0:10到次日0:00，共144个值；本文按区间末端标记解释，即0:10对应0:00--0:10的平均功率。附件5的部分模板却从0:10--0:20开始，末行延伸到次日0:10，与完整自然日边界存在10分钟错位。输出保留原有工作表名称及字段结构，将144个时段标签统一为0:00--0:10至23:50--24:00，不平移数值。此处理属于明确的时间离散化约定；若另有权威时标解释，应据此重新映射并计算。
+
+对功率\(P_t\)，时段电量为\(q_t=P_t\dd\)。例如4小时分组包含24个时段，充电量为对应\(24\)个充电功率之和乘以\(1/6\)。不能把10分钟功率直接填入以kWh为单位的表格。
+
+\subsection{历史预测与预报处理}
+\subsubsection{预测方法选择与报告期评价}
+采用时间顺序验证，而非随机打乱训练与验证数据\cite{forecast}。候选方法为前一日持久性、3日和7日移动平均、14日指数加权平均以及过去最多四个同星期日期的均值。指数权重为\(\exp(-j/5)\)，其中\(j\)表示距最新一天的天数。以1月15日至31日的逐日历史预测MAE选取方法，2月1日起固定方法形式并滚动更新历史输入。1月份运行热启动统一采用持久性方法，1月1日历史不足时使用附件1提供的曲线作为初始先验，避免事后选型改变1月份运行状态。
+
+对任一待预测序列\(x_{d,t}\)，选出的同星期预测与7日均值分别为
+\begin{align}
+\widehat x_{d,t}^{\mathrm{week}}&=\frac{1}{|\mathcal L_d|}\sum_{\ell\in\mathcal L_d}x_{d-\ell,t},\quad \mathcal L_d=\{7,14,21,28\}\cap[1,d-1],\label{eq:week}\\
+\widehat x_{d,t}^{\mathrm{mean7}}&=\frac{1}{m_d}\sum_{\ell=1}^{m_d}x_{d-\ell,t},\quad m_d=\min(7,d-1).\label{eq:mean}
+\end{align}
+历史不足一周时，同星期方法退化为已有最近七日的平均。预测评价结果见表\ref{tab:forecast}。WAPE使用绝对误差总和除以实际值总和，避免夜间光伏零值使MAPE无定义。
+\input{tables/forecast.tex}
+负载与价格表现出明显的星期模式，光伏则采用近7日均值更合适。预测误差虽较小，仍可能在电量紧张的连续时段积累，因此需进一步把误差风险与储能状态共同纳入计划。
+
+\subsubsection{光伏整点预报插值及误差场景}
+问题3在发布时刻\(k\)读取相应预报行，令发布时刻观测为第0个节点，其后24个整点预报为第1至24个节点，对剩余10分钟区间末端线性插值。不同发布时刻分别构造误差历史，不能把18时发布的数据用于12时决策。负载预测在零时生成，日内不额外使用未来实际负载。
+
+令\(\varepsilon_{j,t}^{(k)}=n_{j,t}-\widehat n_{j,t}^{(k)}\)为过去日期\(j\)相同发布时刻的净负荷预测误差。主模型采用过去\(H=14\)天误差轨迹，加上一个零误差场景，得到
+\begin{equation}\label{eq:scenario}
+n_{d,t,s}^{(k)}=\widehat n_{d,t}^{(k)}+\varepsilon_{j_s,t}^{(k)},\qquad
+\varepsilon_{j_0,t}^{(k)}=0.
+\end{equation}
+场景保留一条历史日内误差轨迹的形状，采用等权重，成熟阶段场景数\(S=15\)。这是近期误差经验分布的近似，不意味着所有未来误差均被覆盖，也不额外假定正态分布。后文以7天和28天窗口检验其敏感性。
+
+\section{模型的建立与求解}
+\subsection{问题1：单日确定性线性规划模型}
+\subsubsection{决策变量与购电费用目标}
+单日模型的主要变量为\(P_{\mathrm{grid},t}\)、\(P_{\mathrm{ch},t}\)、\(P_{\mathrm{dis},t}\)与\(E_t\)，并引入非负盈余处理量\(P_{\mathrm{sp},t}\)。购电只发生在外网方向，目标函数为
+\begin{equation}\label{eq:q1obj}
+\min C_1=\sum_{t=1}^{144}\lambda_t P_{\mathrm{grid},t}\dd.
+\end{equation}
+价格与时长均是已知常数，因此目标对购电功率线性。模型不引入题目未给出的电池寿命费、售电收益或峰值需量费。
+
+\subsubsection{功率平衡与储能约束}
+母线功率平衡及储能动态分别为
+\begin{align}
+P_{\mathrm{grid},t}+P_{\mathrm{pv},t}+P_{\mathrm{dis},t}
+&=P_{\mathrm{load},t}+P_{\mathrm{ch},t}+P_{\mathrm{sp},t},\label{eq:balance}\\
+E_t&=E_{t-1}+\eta_cP_{\mathrm{ch},t}\dd-\frac{P_{\mathrm{dis},t}\dd}{\eta_d}.\label{eq:soc}
+\end{align}
+式\eqref{eq:balance}使富余供给具有明确去向；消去\(P_{\mathrm{sp},t}\ge0\)后，可等价写为供给不低于负荷和充电需求的不等式。式\eqref{eq:soc}中的充电量需乘效率，放电输出需除以效率，且始终使用\(E_{t-1}\)与\(E_t\)连接相邻边界。
+\begin{align}
+1200\le E_t\le10800,&\qquad t=0,\ldots,144,\label{eq:boundE}\\
+0\le P_{\mathrm{ch},t}\le5000,&\qquad0\le P_{\mathrm{dis},t}\le5000,\label{eq:boundP}\\
+P_{\mathrm{grid},t}\ge0,&\qquad P_{\mathrm{sp},t}\ge0,\label{eq:positive}\\
+E_0=E_{144}&=6000.\label{eq:cyclic}
+\end{align}
+上述目标、等式和不等式均为线性表达式，故在暂不添加乘积互斥约束的情况下，可构成线性规划\cite{boyd}。
+
+\subsubsection{同时充放电的处理与线性求解}
+不能仅凭电价为正就无条件断言任何LP最优解均不同时充放电。本文在允许零成本盈余处理且效率为常数的条件下，给出保持状态的显式消除方法。设某时段\(c=P_{\mathrm{ch},t}>0\)、\(p=P_{\mathrm{dis},t}>0\)，取
+\begin{equation}\label{eq:remove}
+\delta=\min\left(c,\frac{p}{\eta_c\eta_d}\right),\qquad
+c'=c-\delta,\quad p'=p-\eta_c\eta_d\delta.
+\end{equation}
+则至少有一个新功率为零，且储能状态增量保持不变。对原有购电功率保持不变，净供给增加\((1-\eta_c\eta_d)\delta\)，可由盈余变量吸收；购电费用不变，各功率上界仍满足。因此，至少存在一个不同时充放电的同成本最优解。程序对求解结果实施式\eqref{eq:remove}，并核验全部时段互斥。
+
+若将来引入弃电上限、售电收益、负价格或额外运行机制，上述等价性需重新判断；必要时可引入二元变量\(z_t\)，设置\(P_{\mathrm{ch},t}\le5000z_t\)、\(P_{\mathrm{dis},t}\le5000(1-z_t)\)，形成混合整数线性规划。本文主模型不需要二元变量。
+
+输入数据读取后，按变量顺序组成稀疏约束矩阵，调用\texttt{scipy.optimize.linprog}并设置\texttt{method='highs'}\cite{scipy,highs}，检查求解成功标志、等式残差和不等式余量，再输出逐时功率、时段电量与分组汇总。固定初始状态后，消去盈余变量和固定为零的紧急变量，核心问题具有\(4\times144=576\)个连续变量。
+
+\subsubsection{计算结果与调度分析}
+单日最优购电量为59482.70 kWh，购电费用为35126.95元。指定结果见表\ref{tab:q1_purchase}和表\ref{tab:q1_storage}。
+\input{tables/q1_purchase.tex}
+\input{tables/q1_storage.tex}
+表\ref{tab:q1_purchase}按六个指定10分钟时段列出常规购电量，末行报告全天总量与费用；表\ref{tab:q1_storage}按六个4小时区间列出母线侧充放电量，并报告两端储电量。10:00、14:00和20:00对应时段无需购电，而12:00--12:10仍购入480.41 kWh，说明即使处于日间，也可能因储能补充和跨时段价格差需要购电，不能简单采取“白天一律不购电”的规则。
+
+全天充电20740.67 kWh、放电16799.94 kWh，两者之差3940.73 kWh为循环损耗。由于日初日末电量相等，\(Q_{\mathrm{dis}}=\eta_c\eta_d Q_{\mathrm{ch}}\)，该关系与计算结果一致。4:00--8:00和8:00--12:00等分组同时出现正的充电总量和放电总量，是不同10分钟时段操作的汇总，并非同一时段同时充放电。
+
+\begin{figure}[H]\centering\includegraphics[width=.92\textwidth]{figures/q1_dispatch.pdf}\caption{问题1的功率调度、充放电及储能电量轨迹}\label{fig:q1}\end{figure}
+图\ref{fig:q1}显示，储能在低价阶段及光伏富余阶段充电，在较贵的负荷供给阶段放电。可用电量范围为9600 kWh，容量边界和5000 kW功率限制共同限制套利规模。忽略储能、直接购买正净负荷并弃去光伏盈余的基准费用为48052.05元，本文模型节省12925.10元，降幅为26.90\%。该比较针对相同单日输入和供电要求。
+
+\subsection{问题2：含紧急补电风险的日前调度模型}
+\subsubsection{基于历史误差场景的费用代理模型}
+若只最小化点预测下的计划费用，预测偏低导致的少量常规电费节省，可能被5倍电价紧急补电抵消。因此，日前模型采用共同购电计划、共同名义充放电轨迹，以及各场景的缺额补救变量\(u_{d,t,s}\)。目标为
+\begin{equation}\label{eq:q2obj}
+\min J_d=\sum_t\lambda_tP_{\mathrm{grid},d,t}^{0}\dd
++\frac1S\sum_s\sum_t5\lambda_tu_{d,t,s}\dd.
+\end{equation}
+对所有\(t,s\)设置
+\begin{align}
+P_{\mathrm{grid},d,t}^{0}+P_{\mathrm{dis},d,t}^{\mathrm{pl}}-P_{\mathrm{ch},d,t}^{\mathrm{pl}}+u_{d,t,s}
+&\ge n_{d,t,s}^{(0)},\label{eq:scenarioineq}\\
+u_{d,t,s}&\ge0.\label{eq:u}
+\end{align}
+名义储能仍满足式\eqref{eq:soc}--\eqref{eq:boundP}，当日初值取实际\(E_{d,0}^{\mathrm{act}}\)，不固定日末电量。第一阶段变量是共同的日前安排，第二阶段变量是场景缺额，因此该模型具有两阶段费用代理结构。\textbf{场景中的储能计划保持共同，而实际执行采用状态反馈，二者并不完全等价；故\(J_d\)不能直接用作论文中的实际费用或全局最优值。}实际成本须经全年运行重新核算。
+
+这一模型将“多购少量常规电量”与“承担高价缺额风险”放在同一目标中权衡，兼顾计算效率。零误差场景数设为1且保留5倍惩罚时，退化为点预测的日前风险基准，供给通常通过较便宜的常规购电满足。
+
+\subsubsection{实际反馈、紧急购电与跨日衔接}
+在执行时段\(t\)，以生效常规功率和实际净负荷计算
+\begin{equation}\label{eq:residual}
+R_{d,t}=P_{\mathrm{grid},d,t}+P_{\mathrm{pv},d,t}-P_{\mathrm{load},d,t}.
+\end{equation}
+若\(R_{d,t}\ge0\)，取
+\begin{equation}\label{eq:chargefeedback}
+P_{\mathrm{ch},d,t}=\min\left\{R_{d,t},P_{\max},\frac{\Emax-E_{d,t-1}}{\eta_c\dd}\right\},\quad
+P_{\mathrm{dis},d,t}=P_{\mathrm{em},d,t}=0,
+\end{equation}
+并令\(P_{\mathrm{sp},d,t}=R_{d,t}-P_{\mathrm{ch},d,t}\)。若\(R_{d,t}<0\)，则
+\begin{align}
+P_{\mathrm{dis},d,t}&=\min\left\{-R_{d,t},P_{\max},\frac{\eta_d(E_{d,t-1}-\Emin)}{\dd}\right\},\label{eq:disfeedback}\\
+P_{\mathrm{em},d,t}&=-R_{d,t}-P_{\mathrm{dis},d,t},\quad P_{\mathrm{ch},d,t}=P_{\mathrm{sp},d,t}=0.\label{eq:emfeedback}
+\end{align}
+再依据式\eqref{eq:soc}更新实际状态。该反馈规则不为维持原定充电功率而紧急购电，而是优先满足实际负荷；其计算只依赖当前已观测量。紧急电量和实际费用为
+\begin{align}
+Q_{\mathrm{em},d}&=\sum_tP_{\mathrm{em},d,t}\dd,\label{eq:emenergy}\\
+C_d&=\sum_t\lambda_tP_{\mathrm{grid},d,t}^{0}\dd+\sum_t5\lambda_tP_{\mathrm{em},d,t}\dd.\label{eq:q2cost}
+\end{align}
+跨日衔接严格采用\(E_{d+1,0}^{\mathrm{act}}=E_{d,144}^{\mathrm{act}}\)。1月1日起连续运行，不把2月1日重新设为6000 kWh。主方案2月1日零时电量为9340.95 kWh，12月31日末为1552.80 kWh。
+
+\subsubsection{指定日期的购电与储能结果}
+四个指定日期的完整指标见表\ref{tab:q2_daily_summary}。后续各表按题目给定的购电和储能分组形式展示。问题2无日内调整，原计划量与最终常规购电量相同；全天总费用含实际紧急补电费。
+\input{tables/q2_daily_summary.tex}
+\input{tables/q2_0320_purchase.tex}\input{tables/q2_0320_storage.tex}
+\input{tables/q2_0621_purchase.tex}\input{tables/q2_0621_storage.tex}
+\input{tables/q2_0923_purchase.tex}\input{tables/q2_0923_storage.tex}
+\input{tables/q2_1221_purchase.tex}\input{tables/q2_1221_storage.tex}
+\input{tables/q2_emergency.tex}
+6月21日常规购电量为36523.04 kWh，低于12月21日的98355.39 kWh，反映光伏供给与负载季节差异共同改变外购需求。9月23日出现1094.87 kWh紧急购电，其中20:20--21:30连续事件占1018.46 kWh，主要发生在光伏退出后的晚间负荷阶段。其实际紧急费用为6904.60元，使全天总费用上升至49439.26元。其余三个指定日期无紧急事件，并不意味着这些月份完全没有紧急购电。
+
+\subsubsection{报告期总体结果与基准比较}
+2025年2月至12月共334天、48096个时段，主方案计划购电21791003.35 kWh，计划费用13376186.67元，紧急购电85480.79 kWh，紧急费用487678.99元，总费用13863865.66元。紧急购电涉及105天、733个10分钟时段。
+\input{tables/risk_compare.tex}
+与点预测基准相比，风险代理模型多购常规电量1793816.15 kWh，但紧急购电减少588865.30 kWh，实际总费用减少2134609.17元。该结果说明，把紧急成本仅作为事后统计会遗漏重要的计划权衡。另一方面，主方案存在2753492.48 kWh未利用供给，表明较保守购电及固定名义储能计划也有代价；该量包括弃光和未利用的已付费供给，不能全部解释为光伏弃电量。
+\begin{figure}[H]\centering\includegraphics[width=.92\textwidth]{figures/monthly_comparison.pdf}\caption{问题2与问题3的月度紧急电量和实际总费用}\label{fig:monthly}\end{figure}
+图\ref{fig:monthly}中，问题2的6月紧急购电约24.91 MWh，高于其他月份，说明夏季光伏较多并不保证预测偏差风险较低。12月购电总费用约171.44万元，体现常规购电需求与电价结构的共同作用，不能只根据紧急电量判断月度经济性。
+
+\subsection{问题3：考虑调整费用的滚动优化模型}
+\subsubsection{计划基准与偏差费用}
+令\(P_{\mathrm{grid},d,t}^{0}\)为零时计划，\(P_{\mathrm{grid},d,t}^{(k)}\)为发布时刻\(k\)得到的调整方案，引入
+\begin{equation}\label{eq:deviation}
+P_{\mathrm{grid},d,t}^{(k)}-P_{\mathrm{grid},d,t}^{0}=y_{d,t}^{+}-y_{d,t}^{-},\quad y_{d,t}^{+},y_{d,t}^{-}\ge0.
+\end{equation}
+主口径A为原计划全额付费并另加偏差费用：
+\begin{equation}\label{eq:settleA}
+C_d^{A}=\sum_t\lambda_t\left(P_{\mathrm{grid},d,t}^{0}+1.5y_{d,t}^{+}+0.5y_{d,t}^{-}+5P_{\mathrm{em},d,t}\right)\dd.
+\end{equation}
+敏感性口径B取消下调部分的原电费，再按50\%支付违约费：
+\begin{equation}\label{eq:settleB}
+C_d^{B}=\sum_t\lambda_t\left(P_{\mathrm{grid},d,t}^{0}+1.5y_{d,t}^{+}-0.5y_{d,t}^{-}+5P_{\mathrm{em},d,t}\right)\dd.
+\end{equation}
+例如单价为1元/kWh，原计划100 kWh下调至80 kWh时，口径A支付110元，口径B支付90元。本文选口径A作为对题目费用组成的字面解释，同时报告口径B，避免将未明确的结算解释隐含在计算中。
+
+在口径A且盈余可免费处理的条件下，降低常规购电不仅不能退回原电费，还需支付违约费。保持原购电量并处理盈余始终不劣，因此至少存在\(y^-=0\)的最优调整方案。计算中所有主方案的下调量均为零，与该经济逻辑一致。若需要鼓励双向调整，就必须具有退费或其他明确的盈余成本机制。
+
+\subsubsection{滚动目标与算法流程}
+零时使用对应光伏预报与历史负载预测求解日前模型。对\(k=6,12,18\)，令剩余时段集合为\(\mathcal T_k=\{6k+1,\ldots,144\}\)。原计划费在当前优化中是常数，可从目标中略去。主口径的剩余目标为
+\begin{equation}\label{eq:mpc}
+\min J_{d,k}=\sum_{t\in\mathcal T_k}\lambda_t(1.5y_{d,t}^{+}+0.5y_{d,t}^{-})\dd
++\frac1S\sum_s\sum_{t\in\mathcal T_k}5\lambda_tu_{d,t,s}\dd.
+\end{equation}
+约束包括式\eqref{eq:deviation}、更新场景下的式\eqref{eq:scenarioineq}、储能动态及功率容量边界，初始状态为发布时刻的实际电量。口径B只把目标中的\(+0.5y^-\)换为\(-0.5y^-\)。该分段线性费用可直接通过偏差变量构成LP。
+
+本策略采用有限日内剩余时域的滚动优化，遵循“更新状态、优化未来、只实施前一段”的控制思想\cite{mpc}。具体步骤为：
+\begin{enumerate}
+\item 零时获取当前SOC、历史负载预测与零时光伏预报，形成原始全天购电计划。
+\item 按10分钟反馈规则执行到下一预报时刻，记录实际充放电、紧急量与储电量。
+\item 读取刚发布的光伏预报，对当日剩余时段插值，重建相同发布时刻的历史误差场景。
+\item 保持零时计划基准不变，优化剩余购电量与名义储能安排，仅实施到下一次更新。
+\item 日末按各时段最终生效购电量相对零时计划的偏差结算一次费用，并传递实际SOC。
+\end{enumerate}
+虽然每次预报覆盖未来24小时，本文滚动优化只使用其中当日剩余部分，以保持当天合同边界；跨日部分未直接纳入目标，其潜在价值留在模型改进中讨论。
+
+\subsubsection{指定日期与实际执行结果}
+典型日结果见表\ref{tab:q3_daily_summary}及后续指定格式表。其中“调整后”表示最终生效的常规购电总量，并非相对原计划的差值。
+\input{tables/q3_daily_summary.tex}
+\input{tables/q3_0320_purchase.tex}\input{tables/q3_0320_storage.tex}
+\input{tables/q3_0621_purchase.tex}\input{tables/q3_0621_storage.tex}
+\input{tables/q3_0923_purchase.tex}\input{tables/q3_0923_storage.tex}
+\input{tables/q3_1221_purchase.tex}\input{tables/q3_1221_storage.tex}
+\input{tables/q3_emergency.tex}
+3月20日原计划71993.11 kWh，最终常规购电72006.49 kWh，上调13.38 kWh，上调费用14.64元；仍在9:30--10:00发生113.04 kWh紧急补电。由此可见，预报更新可减少风险，却不能完全消除负载和光伏预测误差。
+
+9月23日紧急购电量为464.02 kWh，比问题2的1094.87 kWh少630.85 kWh，总费用也从49439.26元降至47642.07元。但该日没有生效上调量，改善主要来自零时光伏预报不同导致的日前计划变化，不能把全部差异归因于日内滚动调整。
+\begin{figure}[H]\centering\includegraphics[width=.92\textwidth]{figures/q3_typical.pdf}\caption{9月23日问题3的购电与储电量；虚线为可更新时刻，该日未触发生效上调}\label{fig:q3}\end{figure}
+
+\subsubsection{预报更新频率的经济价值}
+为了单独识别日内更新的作用，使用相同零时预报、相同历史误差窗口和同一结算口径，比较仅零时决策、增加12时更新、使用全部四次预报三种方案。各方案均连续运行全年，实际SOC允许随其执行结果变化。
+\input{tables/frequency.tex}
+相较仅使用零时预报，四次预报方案节省75859.43元，降幅0.54\%，紧急电量从77341.11 kWh降至41147.37 kWh，降幅46.80\%。相较仅增加12时更新，进一步加入6时和18时更新又节省17212.71元。因此，在附件已提供预报且未额外收取预报获取费用的前提下，使用这些日内更新具有实测经济价值；若实际系统另有信息成本，其增量成本应低于上述节省额。
+
+问题3报告期总费用为13934495.57元，比问题2多70629.91元，约增加0.51\%。虽然紧急费用由487678.99元降至210396.16元，但较高的原计划费与159758.44元上调费抵消了这一收益。该结果说明，本次经验风险代理与给定信息组合不保证滚动方案在所有比较基准上都更便宜，不宜宣称“模型层次越高总费用必然越低”。
+
+\subsection{问题4：波动电价下的调控模型}
+\subsubsection{未来电价未知的可实施模型}
+价格未知时，以\(\widehat\lambda_{d,t}\)替换式\eqref{eq:q2obj}、\eqref{eq:mpc}中的计划价格，得到决策；实际结算时，式\eqref{eq:q2cost}、\eqref{eq:settleA}全部使用附件4的\(\lambda_{d,t}\)。例如问题4对应的滚动目标为
+\begin{equation}\label{eq:priceobj}
+\min\sum_{t\in\mathcal T_k}\widehat\lambda_{d,t}(1.5y_{d,t}^{+}+0.5y_{d,t}^{-})\dd
++\frac1S\sum_s\sum_{t\in\mathcal T_k}5\widehat\lambda_{d,t}u_{d,t,s}\dd.
+\end{equation}
+物理约束和偏差定义不变。历史价格采用同星期均值，日内光伏更新时继续使用零时形成的价格预测；这是一个实现简单、信息范围明确的价格处理方式，并非完整的日内价格预测器。主方案\texttt{result4-2.xlsx}与\texttt{result4-3.xlsx}均采用这一可实施设定。
+
+\subsubsection{日前价格已知的对照模型}
+对照模型在每天零时获知当天附件4价格曲线，令\(\widehat\lambda_{d,t}=\lambda_{d,t}\)，但仍保持未来负载和光伏实际量未知。该方案用于分离价格信息的影响，不应称为全信息完美预测，也不能据其实际费用直接给出全年最优下界。
+\input{tables/price_information.tex}
+已知价格条件下，日前模型总费用减少104569.60元，滚动模型减少123349.27元，分别约占对应价格预测方案费用的0.72\%和0.84\%。储能等效循环也由591.46和588.96次增至622.10和618.73次，表明准确的短时价差信息增加了储能调节活动，但未计入寿命损耗时，更多循环不能直接等同于长期收益更高。
+
+\subsubsection{指定日期与费用对比}
+两套可实施方案的四个指定日期汇总见表\ref{tab:q4_2_daily_summary}和表\ref{tab:q4_3_daily_summary}，对应紧急事件见表\ref{tab:q4_2_emergency}和表\ref{tab:q4_3_emergency}。完整的指定时段购电表和4小时充放电表列于附录C，全部334天结果写入所要求的两个工作簿。
+\input{tables/q4_2_daily_summary.tex}\input{tables/q4_2_emergency.tex}
+\input{tables/q4_3_daily_summary.tex}\input{tables/q4_3_emergency.tex}
+6月21日的波动电价日前策略费用为18609.89元，低于重复日内电价时的21502.49元；12月21日则从63456.61元升至74692.77元。电价变化对经济性的影响取决于价格水平、价差与净负荷同时出现的时段，不能仅由“波动增强”判断费用升降。
+\begin{figure}[H]\centering\includegraphics[width=.92\textwidth]{figures/q4_price.pdf}\caption{6月21日电价及问题4滚动策略的储能轨迹比较}\label{fig:q4}\end{figure}
+\input{tables/annual.tex}
+\begin{figure}[H]\centering\includegraphics[width=.88\textwidth]{figures/annual_costs.pdf}\caption{四套主模型的报告期费用构成}\label{fig:annual}\end{figure}
+在2月至12月的实际价格样本下，问题4日前与滚动主方案费用分别为14621415.17元和14711757.51元，均高于重复日内价格对应方案。该差异同时包含实际价格变化与调度变化，不应直接解释为预测方法造成的全部损失。
+
+\subsubsection{稀疏模型规模与计算复杂度}
+剩余时域为\(m\)个时段、场景数为\(S\)时，日前模型包含\((4+S)m\)个连续变量、\(m\)个状态等式与\(Sm\)个场景不等式；调整模型再增加\(2m\)个偏差变量与\(m\)个计划差等式。矩阵非零元数量和构造空间均为\(O(Sm)\)。成熟阶段\(S=15\)，全天日前模型有2736个连续变量；在6时更新时，\(m=108\)，调整模型有2268个变量。
+
+全年逐日前模型调用365次LP，四次预报滚动模型调用1460次LP；仅报告2月至12月分别对应334次和1336次，其余用于1月份初始化。HiGHS求解时间取决于稀疏结构、退化性、所选算法和机器条件，不能由上述矩阵规模直接声称整个算法的运行时间也是\(O(Sm)\)。实测耗时见表\ref{tab:runtime}，不包含依赖安装、绘图、工作簿输出及LaTeX编译。
+\input{tables/runtime.tex}
+
+\subsection{模型检验与讨论}
+\subsubsection{物理约束与费用一致性检验}
+程序逐时独立复算供需平衡、SOC递推、容量和功率边界，并核查跨日连续性。13组主模型及对照实验的最大实际功率平衡残差不超过\(9.1\times10^{-13}\) kW，最大日费用复算差不超过\(5.9\times10^{-11}\)元；全部实际SOC位于1200--10800 kWh，无同一时段同时充放电。用于比较的名义LP最大等式与不等式误差亦小于\(10^{-7}\)。
+
+另外，将第181天以后的负荷、光伏、价格及预报数据扰动后重新形成预测，前180天预测保持完全一致，验证了实现中的时间信息隔离。对SOC位于下限且发生缺额、位于上限且存在盈余两种边界单独测试，结果分别触发紧急购电和盈余处理，不突破电量约束。导出文件重新读取后，逐日时段电量和汇总电量、计划费用与对应计算记录一致。
+
+\subsubsection{结算解释、误差窗口与库存差异}
+\input{tables/settlement.tex}
+采用退费口径后，问题3出现1022284.79 kWh下调量，下调净费用为\(-310478.47\)元，总费用降至13642862.05元。相对于主口径下降291633.53元，幅度超过仅增加日内更新频率所产生的节省。问题4滚动方案也出现类似变化。因此，实际应用前明确退购结算机制，比单纯增加优化次数更为关键。
+\input{tables/window.tex}
+7天窗口的紧急量与费用均低于14天主窗口，28天窗口则较高，说明较早误差对当前分布的代表性可能下降。主窗口预先设为14天，7天结果属于报告期敏感性发现，本文未据报告期最优结果回头重选主模型。若进一步部署，可采用仅基于过去已完成日期的嵌套滚动验证调整窗口。
+
+不同策略在统计期边界保有的储能库存略有差异。为进行辅助比较，可取统一参考价值\(v=0.9\times0.4248\)元/kWh，定义库存调整费用
+\begin{equation}\label{eq:inventory}
+C_{\mathrm{adj}}=C_{\mathrm{total}}+vE_{32,0}-vE_{365,144}.
+\end{equation}
+该量仅作同一库存估值下的比较，不替代题目要求的实际现金费用。两种价格信息方案的边界库存价值差异为百元量级，远小于十万元量级的费用差；风险基准与主模型间亦不因该修正改变节省结论。
+
+\section{模型的评价与改进}
+\subsection{模型评价}
+\subsubsection{模型优点}
+\begin{enumerate}
+\item 统一物理约束，按预测、交易和价格机制逐层扩展四问模型。
+\item 保持稀疏LP形式，支持全年批量求解，计算效率较高。
+\item 日前计划计入紧急风险，滚动优化可利用更新预报。
+\item 区分预测与实际量，采用实际价格结算，结果可复算。
+\end{enumerate}
+\subsubsection{模型局限}
+\begin{enumerate}
+\item 共用储能计划的缺额代理不等同于多阶段最优补救策略。
+\item 未计入寿命、温度和可变效率，评价主要反映短期交易成本。
+\item 历史误差场景可能随季节失配，不能覆盖全部尾部风险。
+\item 未充分利用跨日预报和终端价值，日内价格预测保持固定。
+\end{enumerate}
+\subsection{改进方向}
+\subsubsection{不确定性与跨日优化}
+可加入分场景储能补救及非预见性约束，构建多阶段随机规划或分布鲁棒模型，并通过24--48小时跨日时域与终端价值修正短期决策。
+\subsubsection{寿命成本与预测改进}
+引入与放电深度和能量吞吐相关的寿命成本；结合可获得的气象和节假日信息改进预测，以历史滚动验证选择模型和窗口。
+
+\begingroup
+\renewcommand{\refname}{参考文献}
+\begin{thebibliography}{9}\footnotesize\setlength{\itemsep}{0pt}
+\bibitem{boyd} Boyd S, Vandenberghe L. Convex Optimization[M]. Cambridge: Cambridge University Press, 2004. \url{https://web.stanford.edu/~boyd/cvxbook/}.
+\bibitem{highs} Huangfu Q, Hall J A J. Parallelizing the dual revised simplex method[J]. Mathematical Programming Computation, 2018, 10(1):119--142. DOI:10.1007/s12532-017-0130-5.
+\bibitem{scipy} SciPy Developers. scipy.optimize.linprog: Linear programming[EB/OL]. [2026-09-10]. \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linprog.html}.
+\bibitem{mpc} Rawlings J B, Mayne D Q, Diehl M M. Model Predictive Control: Theory, Computation, and Design, 2nd edition[EB/OL]. Nob Hill Publishing. [2026-09-10]. \url{https://sites.engineering.ucsb.edu/~jbraw/mpc/}.
+\bibitem{forecast} Hyndman R J, Athanasopoulos G. Forecasting: Principles and Practice[M/OL]. 3rd ed. Melbourne: OTexts, 2021. [2026-09-10]. \url{https://otexts.com/fpp3/}.
+\end{thebibliography}
+\endgroup
+\clearpage
+\section*{附录A\quad 支撑材料与程序实现说明}
+\subsection*{A.1\quad 运行环境与文件组织}
+本次实测环境为Python 3.12.14、NumPy 2.5.3、SciPy 1.18.1，使用openpyxl读取和填充Excel模板，Matplotlib生成论文图形。程序不依赖pandas；与采用pandas的数据框方案相比，直接读入固定形状数组已足以完成本题计算。Python 3.10是初始建议环境，本文没有将未实际测试的版本和耗时写成实测结果。依赖文件\texttt{code/requirements.txt}给出本次复现版本。
+
+\begin{center}\small\begin{tabular}{p{5.0cm}p{9.0cm}}\toprule
+文件或目录 & 内容\\\midrule
+\texttt{main.tex}, \texttt{outline.tex} & 完整论文源码与三级提纲源码\\
+\texttt{code/model.py} & 数据读取、历史预测、场景构造、稀疏LP、运行反馈与状态核验\\
+\texttt{code/run\_experiments.py} & 单日求解、四套主模型、各类对照实验及计时\\
+\texttt{code/export\_results.py} & 5个指定工作簿的模板填充及保存后复核\\
+\texttt{code/make\_evidence.py} & 由计算结果生成所有数值表格与矢量图形\\
+\texttt{code/check\_model.py} & 功率、SOC、费用、边界及未来数据扰动检查\\
+\texttt{workbooks/result1.xlsx} & 单日计划购电量与储能分组电量\\
+\texttt{workbooks/result2.xlsx} & 日前计划、实际充放电及连续紧急事件\\
+\texttt{workbooks/result3.xlsx} & 增加最终生效的调整后常规购电工作表\\
+\texttt{workbooks/result4-2.xlsx}, \texttt{result4-3.xlsx} & 价格预测主设定下对应问题2与3的结果\\
+\texttt{results/*.json}, \texttt{daily\_summary.csv} & 参数、费用分解、典型日与独立核验记录\\
+\texttt{tables/}, \texttt{figures/} & 论文直接调用的真实结果表及矢量图\\\bottomrule
+\end{tabular}\end{center}
+
+\subsection*{A.2\quad 运行流程与关键约束编码}
+先安装依赖，再依次执行以下命令。其中\texttt{DATA}表示包含附件1至4及附件5文件夹的原始附件目录；原始附件不修改，也不需要预先填入结果。命令应在论文工程目录运行。
+\begin{lstlisting}[language=bash,numbers=none]
+python -m pip install -r code/requirements.txt
+python code/run_experiments.py --data DATA
+python code/export_results.py --data DATA
+python code/check_model.py --data DATA
+python code/make_evidence.py
+xelatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
+\end{lstlisting}
+模型按购电、充电、放电、状态和场景缺额的顺序拼接变量。储能动态矩阵的状态部分为单位矩阵减去一阶下对角矩阵，充电与放电系数分别为\(-\eta_c\dd\)和\(\dd/\eta_d\)。场景功率约束采用重复单位矩阵组合，并将大于等于关系乘以负号转换为\texttt{A\_ub @ x <= b\_ub}。问题1将日末状态上下界均置为6000，紧急变量上下界均置为0；其余问题释放日末边界并传递实际初值。
+
+批处理逐日执行，仅在一次优化中构建当日剩余时域的稀疏矩阵，不构造全年大规模稠密矩阵。读取后的数据和运行轨迹保存在数组中，结束后统一导出。各方案的全年仿真耗时见正文表\ref{tab:runtime}；具体设备和库版本变化可能导致耗时以及等价最优解的个别时段分配略有变化。
+
+\subsection*{A.3\quad 工作簿口径与结果复现}
+各结果工作簿均保留题目规定的工作表名称。\texttt{计划购电量}记录零时原始计划，其“全天购电费”仅为原计划费；\texttt{调整购电量}记录最终生效的常规购电量，其费用列为原计划费加偏差净费用，尚未加实际紧急费。\texttt{紧急购电量}按连续10分钟事件合并，合并电量取所有组成时段电量之和；没有事件的日期标注“无紧急购电”并填0。完整的实际费用分解见\texttt{daily\_summary.csv}，正文使用总费用口径。
+
+\texttt{充放电量}按实际执行轨迹每4小时汇总，0:00和24:00为边界状态，不对这些库存量作时段求和。工作簿保留完整精度的数值，显示四位小数；论文表格显示两位小数，因此个别显示值加总可能存在末位舍入差。表格不是示例数据，均由随附程序的实际运行结果生成。
+
+\clearpage
+\section*{附录B\quad 完整可运行程序}
+\subsection*{B.1\quad 数据、预测、优化与反馈}
+\lstinputlisting{code/model.py}
+\subsection*{B.2\quad 实验驱动程序}
+\lstinputlisting{code/run_experiments.py}
+\subsection*{B.3\quad 结果工作簿导出}
+\lstinputlisting{code/export_results.py}
+\subsection*{B.4\quad 独立核验程序}
+\lstinputlisting{code/check_model.py}
+\subsection*{B.5\quad 图表生成程序}
+\lstinputlisting{code/make_evidence.py}
+
+\clearpage
+\section*{附录C\quad 问题4指定时段的完整结果}
+\subsection*{C.1\quad 波动电价日前主方案}
+\input{tables/q4_2_0320_purchase.tex}\input{tables/q4_2_0320_storage.tex}
+\input{tables/q4_2_0621_purchase.tex}\input{tables/q4_2_0621_storage.tex}
+\input{tables/q4_2_0923_purchase.tex}\input{tables/q4_2_0923_storage.tex}
+\input{tables/q4_2_1221_purchase.tex}\input{tables/q4_2_1221_storage.tex}
+\subsection*{C.2\quad 波动电价滚动主方案}
+\input{tables/q4_3_0320_purchase.tex}\input{tables/q4_3_0320_storage.tex}
+\input{tables/q4_3_0621_purchase.tex}\input{tables/q4_3_0621_storage.tex}
+\input{tables/q4_3_0923_purchase.tex}\input{tables/q4_3_0923_storage.tex}
+\input{tables/q4_3_1221_purchase.tex}\input{tables/q4_3_1221_storage.tex}
+\end{document}

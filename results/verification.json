@@ -1,0 +1,98 @@
+{
+  "cases": {
+    "q2": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q4_2": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q4_3": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q2_nominal": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_daily": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_noon": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_refund": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q4_2_known": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q4_3_known": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q4_3_refund": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_history7": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.1827872842550278e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_history28": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    }
+  },
+  "causality_future_perturbation": "passed",
+  "physical_boundary_checks": "passed",
+  "q1_checks": "passed"
+}

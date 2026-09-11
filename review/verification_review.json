@@ -1,0 +1,278 @@
+{
+  "environment": {
+    "numpy": "2.5.3"
+  },
+  "cases": {
+    "q2": {
+      "total_cost": 13863865.65992907,
+      "reported_total_difference": 3.725290298461914e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q3": {
+      "total_cost": 13934495.574314373,
+      "reported_total_difference": -1.6763806343078613e-08,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 2.9103830456733704e-11
+    },
+    "q4_2": {
+      "total_cost": 14621415.170667116,
+      "reported_total_difference": -7.450580596923828e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q4_3": {
+      "total_cost": 14711757.508974437,
+      "reported_total_difference": 1.862645149230957e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 2.9103830456733704e-11
+    },
+    "q2_nominal": {
+      "total_cost": 15998474.825714186,
+      "reported_total_difference": 7.450580596923828e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q3_daily": {
+      "total_cost": 14010355.004838273,
+      "reported_total_difference": -5.587935447692871e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q3_noon": {
+      "total_cost": 13951708.287558332,
+      "reported_total_difference": -1.1175870895385742e-08,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q3_refund": {
+      "total_cost": 13642862.048251932,
+      "reported_total_difference": 1.4901161193847656e-08,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 2.9103830456733704e-11
+    },
+    "q4_2_known": {
+      "total_cost": 14516845.567692673,
+      "reported_total_difference": 1.1175870895385742e-08,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q4_3_known": {
+      "total_cost": 14588408.242621124,
+      "reported_total_difference": -7.450580596923828e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q4_3_refund": {
+      "total_cost": 14403672.81934905,
+      "reported_total_difference": 1.862645149230957e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 5.820766091346741e-11
+    },
+    "q3_history7": {
+      "total_cost": 13756752.086841553,
+      "reported_total_difference": -3.725290298461914e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 2.9103830456733704e-11
+    },
+    "q3_history28": {
+      "total_cost": 14006955.241975706,
+      "reported_total_difference": -9.313225746154785e-09,
+      "max_power_balance_residual": 9.094947017729282e-13,
+      "max_soc_recursion_residual": 1.0231815394945443e-12,
+      "max_cross_day_gap": 0.0,
+      "min_soc": 1200.0,
+      "max_soc": 10800.0,
+      "max_charge": 5000.0,
+      "max_discharge": 5000.0,
+      "simultaneous_periods": 0,
+      "max_daily_cost_residual": 2.9103830456733704e-11
+    }
+  },
+  "workbooks": {
+    "result2.xlsx": {
+      "计划购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "计划购电量_max_daily_sum_difference": 4.3655745685100555e-11,
+      "计划购电量_max_cost_difference": 2.1827872842550278e-11,
+      "storage_max_difference": 3.637978807091713e-12
+    },
+    "result3.xlsx": {
+      "计划购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "计划购电量_max_daily_sum_difference": 4.3655745685100555e-11,
+      "计划购电量_max_cost_difference": 1.4551915228366852e-11,
+      "调整购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "调整购电量_max_daily_sum_difference": 4.3655745685100555e-11,
+      "调整购电量_max_cost_difference": 1.4551915228366852e-11,
+      "storage_max_difference": 5.4569682106375694e-12
+    },
+    "result4-2.xlsx": {
+      "计划购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "计划购电量_max_daily_sum_difference": 2.9103830456733704e-11,
+      "计划购电量_max_cost_difference": 2.1827872842550278e-11,
+      "storage_max_difference": 3.637978807091713e-12
+    },
+    "result4-3.xlsx": {
+      "计划购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "计划购电量_max_daily_sum_difference": 5.820766091346741e-11,
+      "计划购电量_max_cost_difference": 2.1827872842550278e-11,
+      "调整购电量_max_10min_energy_difference": 4.547473508864641e-13,
+      "调整购电量_max_daily_sum_difference": 5.820766091346741e-11,
+      "调整购电量_max_cost_difference": 2.1827872842550278e-11,
+      "storage_max_difference": 5.4569682106375694e-12
+    }
+  },
+  "q1": {
+    "cost": 35126.948589289634,
+    "grid_kwh": 59482.69899835392,
+    "storage_cycle_energy_residual": -3.637978807091713e-12,
+    "workbook_grid_max_difference": 4.547473508864641e-13
+  },
+  "csv_max_total_cost_difference": 2.1827872842550278e-11,
+  "scenario_column_permutation": {
+    "date": "2025-09-23",
+    "original_objective": 47479.929374437954,
+    "permuted_objective": 47479.92937443795,
+    "objective_difference": -7.275957614183426e-12,
+    "max_grid_difference": 288.55232500000056,
+    "original_fixed_grid_day_cost": 47642.066788691154,
+    "permuted_fixed_grid_day_cost": 47840.80465781531
+  },
+  "synthetic_feedback_counterexample": {
+    "greedy_cost": 7.000000000000044,
+    "feasible_reserve_first_period_cost": 2.0,
+    "greedy_emergency_kwh": [
+      2.2648549702353193e-14,
+      1.0
+    ],
+    "initial_soc": 1201.111111111111
+  },
+  "pv_forecast_common_horizons": {
+    "0": {
+      "historical_mae_kw": 3.9029791880524667,
+      "zero_issue_mae_kw": 10.557807221667776,
+      "current_issue_mae_kw": 10.557807221667776
+    },
+    "6": {
+      "historical_mae_kw": 314.89779123063397,
+      "zero_issue_mae_kw": 342.51077432496123,
+      "current_issue_mae_kw": 184.68695151641163
+    },
+    "12": {
+      "historical_mae_kw": 292.27355739235816,
+      "zero_issue_mae_kw": 426.27202049789315,
+      "current_issue_mae_kw": 140.3782805001109
+    },
+    "18": {
+      "historical_mae_kw": 2.5244990887273073,
+      "zero_issue_mae_kw": 10.623287947715683,
+      "current_issue_mae_kw": 10.015140843313374
+    }
+  },
+  "pv_forecast_full_day_mae_kw": {
+    "historical": 153.39970672494297,
+    "zero_issue": 197.49097249805948
+  },
+  "update_cost_by_month": {
+    "2": 2068.0142822243542,
+    "3": 12763.606473502048,
+    "4": -2179.298109863699,
+    "5": -5962.772253567367,
+    "6": 1841.8956176149113,
+    "7": 38524.65377857697,
+    "8": -1659.9536298329767,
+    "9": 10519.290232417421,
+    "10": 6006.514217344358,
+    "11": -2082.383090536612,
+    "12": 16019.863006021526
+  },
+  "update_days": {
+    "cheaper": 62,
+    "more_expensive": 133,
+    "same": 139
+  },
+  "forecast_future_perturbation": "passed; this does not by itself test decisions"
+}
