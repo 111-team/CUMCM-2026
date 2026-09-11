@@ -65,3 +65,7 @@ xelatex -interaction=nonstopmode main.tex
 
 核验格式时使用的2026年官方规范：
 https://www.mcm.edu.cn/html_cn/node/4cd596519c9eb9fbd866398f6df0caa3.html
+
+## 协作记录
+
+- 2026-09-11：git 推送权限测试通过（Yihan-HITSZ），可直接用 git 协作迭代论文。
