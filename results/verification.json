@@ -65,14 +65,14 @@
     },
     "q4_3_known": {
       "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 2.9103830456733704e-11,
+      "max_cost_residual": 5.820766091346741e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
     "q4_3_refund": {
       "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 2.9103830456733704e-11,
+      "max_cost_residual": 5.820766091346741e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
@@ -92,7 +92,7 @@
       "simultaneous_periods": 0
     }
   },
-  "causality_future_perturbation": "passed",
+  "causality_future_perturbation": "passed (forecasts and q2 decisions through day 180)",
   "physical_boundary_checks": "passed",
   "q1_checks": "passed"
 }

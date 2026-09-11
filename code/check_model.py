@@ -2,7 +2,7 @@
 import argparse,json
 from pathlib import Path
 import numpy as np
-from model import load_data,forecast_all,audit,execute,EMIN,EMAX,PMAX,DT,ETA,EINIT
+from model import load_data,forecast_all,run_case,audit,execute,EMIN,EMAX,PMAX,DT,ETA,EINIT
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--data',type=Path,required=True);args=p.parse_args()
@@ -29,12 +29,17 @@ def main():
     altered,_,selected2=forecast_all(changed)
     assert selected==selected2
     for key in ('load','pv','price','issued'):assert np.array_equal(original[key][:180],altered[key][:180])
+    # 进一步重跑日前决策：报告期后数据扰动不能改变此前已形成的计划。
+    original_q2 = dict(np.load(root/'q2.npz'))
+    altered_q2, _ = run_case(changed, altered, kind=2)
+    assert np.array_equal(original_q2['plan'][:180], altered_q2['plan'][:180])
+    assert np.array_equal(original_q2['grid'][:180], altered_q2['grid'][:180])
     # 缺电且SOC下限、盈余且SOC上限两种边界。
     low=execute(np.array([0.]),np.array([100.]),np.array([0.]),EMIN)
     high=execute(np.array([100.]),np.array([0.]),np.array([0.]),EMAX)
     assert low['emergency'][0]==100 and low['dis'][0]==0
     assert high['spill'][0]==100 and high['ch'][0]==0
-    output={'cases':metrics,'causality_future_perturbation':'passed','physical_boundary_checks':'passed','q1_checks':'passed'}
+    output={'cases':metrics,'causality_future_perturbation':'passed (forecasts and q2 decisions through day 180)','physical_boundary_checks':'passed','q1_checks':'passed'}
     (root/'verification.json').write_text(json.dumps(output,indent=2),encoding='utf-8')
     print(json.dumps(output,indent=2))
 if __name__=='__main__':main()

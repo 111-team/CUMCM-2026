@@ -154,6 +154,39 @@ def execute(grid, load, pv, initial, eta=ETA, pmax=PMAX):
     return dict(ch=ch,dis=dis,emergency=emergency,spill=spill,energy=energy)
 
 
+def execute_reserve(grid, load, pv, initial, forecast_load=None, forecast_pv=None,
+                    prices=None, eta=ETA, pmax=PMAX, reserve_horizon=36):
+    """固定常规购电计划下的可复现储能保留基准。
+
+    反馈仍只使用当前实际负荷/光伏；为下一 ``reserve_horizon`` 个10分钟
+    时段预留日前预测的缺额所需电量，避免把电池一次性放空。该规则不改动
+    常规购电计划或结算，只改变实际充放电与紧急补电，因而可与 execute
+    直接作同初值、同信息范围的连续回测。
+    """
+    n = len(grid)
+    if forecast_load is None or forecast_pv is None:
+        forecast_load, forecast_pv = load, pv
+    ch, dis, emergency, spill = np.zeros((4, n))
+    energy = np.zeros(n + 1)
+    energy[0] = initial
+    for t in range(n):
+        residual = grid[t] + pv[t] - load[t]
+        if residual >= 0:
+            ch[t] = min(residual, pmax, max(0, (EMAX-energy[t])/(eta*DT)))
+            spill[t] = residual - ch[t]
+        else:
+            end = min(n, t + reserve_horizon + 1)
+            expected_deficit = np.maximum(
+                forecast_load[t+1:end] - forecast_pv[t+1:end] - grid[t+1:end], 0.0
+            ).sum() * DT / eta
+            reserve = min(EMAX-EMIN, expected_deficit)
+            available = max(0, (energy[t] - EMIN - reserve) * eta / DT)
+            dis[t] = min(-residual, pmax, available)
+            emergency[t] = -residual - dis[t]
+        energy[t+1] = energy[t] + eta*DT*ch[t] - DT/eta*dis[t]
+    return dict(ch=ch, dis=dis, emergency=emergency, spill=spill, energy=energy)
+
+
 def run_case(data,forecast,kind=2,price_mode='fixed',updates=(0,6,12,18),settlement='additive',history_days=14,eta=ETA):
     begin=perf_counter()
     arrays={key:np.zeros((365,144)) for key in ('plan','grid','ch','dis','emergency','spill')}

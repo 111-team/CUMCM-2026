@@ -2,10 +2,10 @@
 \centering\small
 \caption{历史预测方法的验证与测试误差}
 \label{tab:forecast}
-\begin{tabular}{lrrrr}\toprule
-变量 & 选定方法 & 1月验证MAE & 2--12月MAE & 2--12月WAPE \\\midrule
-负载/kW & 同星期均值 & 117.84 & 188.88 & 4.09\% \\
-光伏/kW & 7日移动均值 & 96.18 & 153.40 & 6.45\% \\
-电价/(元/kWh) & 同星期均值 & 0.03 & 0.0489 & 6.45\% \\
+\begin{tabular}{lrrrrr}\toprule
+变量 & 选定方法 & 1月验证MAE & 2--12月MAE & 2--12月RMSE & 2--12月WAPE \\\midrule
+负载/kW & 同星期均值 & 117.84 & 188.88 & 262.06 & 4.09\% \\
+光伏/kW & 7日移动均值 & 96.18 & 153.40 & 303.86 & 6.45\% \\
+电价/(元/kWh) & 同星期均值 & 0.03 & 0.0489 & 0.0696 & 6.45\% \\
 \bottomrule\end{tabular}
 \end{table}
