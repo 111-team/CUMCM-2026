@@ -7,7 +7,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 from model import DT,EINIT,ETA,EMAX,EMIN
-from export_results import events
+from export_results import events, interval
 
 ROOT=Path(__file__).resolve().parents[1]
 R=ROOT/'results';T=ROOT/'tables';F=ROOT/'figures'
@@ -18,7 +18,7 @@ CASES={k:dict(np.load(R/(k+'.npz'))) for k in S['cases']}
 Q=dict(np.load(R/'q1.npz'));I=dict(np.load(R/'inputs_processed.npz'))
 DATES=['2025-03-20','2025-06-21','2025-09-23','2025-12-21']
 INDEX=[S['dates'].index(d) for d in DATES]
-LABELS={'q2':'问题2','q3':'问题3','q4_2':'问题4-2','q4_3':'问题4-3','q2_nominal':'点预测基准','q3_daily':'仅0时','q3_noon':'0、12时','q3_06':'0、6时','q3_018':'0、18时','q3_0612':'0、6、12时','q3_01218':'0、12、18时','q3_0618':'0、6、18时','q3_refund':'退费口径','q4_2_known':'价格已知：日前','q4_3_known':'价格已知：滚动','q4_3_refund':'波动电价退费口径','q3_history7':'7天窗口','q3_history28':'28天窗口'}
+LABELS={'q2':'问题2','q3':'问题3','q4_2':'问题4-2','q4_3':'问题4-3','q2_nominal':'点预测基准','q3_daily':'仅0时','q3_noon':'0、12时','q3_additive':'不退原费对照','q4_2_known':'价格已知：日前','q4_3_known':'价格已知：滚动','q4_3_additive':'波动价不退原费','q3_history7':'7天窗口','q3_history28':'28天窗口','q3_blend':'固定价预报融合','q4_3_blend':'波动价预报融合'}
 def num(x):return f'{float(x):.2f}'
 def save_table(name,caption,headers,rows,label=None):
     text='\\begin{table}[H]\n\\centering\\small\n\\caption{'+caption+'}\n'
@@ -76,31 +76,36 @@ for key in ['q2','q3','q4_2','q4_3']:
     save_table(key+'_daily_summary',LABELS[key]+'典型日购电与费用汇总',['日期','原计划/kWh','调整后/kWh','紧急/kWh','总费用/元'],[[r['date'][5:],num(r['plan']),num(r['grid']),num(r['emergency']),num(r['cost'][4])] for r in typical[key]],'tab:'+key+'_daily_summary')
 
 # 指定时段同时展示零时计划、最终生效量及差额，避免把调整后数量误作原计划。
-idx = INDEX[0]; a = CASES['q3']; ts = [7*6+2, 7*6+3, 9*6, 12*6, 18*6, 20*6]
+idx = INDEX[0]; a = CASES['q3']; ts = [10*6,12*6,14*6,16*6,18*6,20*6]
 save_table('q3_plan_adjust', '问题3 2025年3月20日指定时段计划与调整对照（kWh）',
            ['时段','零时计划','最终生效','差额'],
-           [[f'{t//6}:{(t%6)*10:02d}--{t//6}:{(t%6+1)*10:02d}', num(a['plan'][idx,t]*DT), num(a['grid'][idx,t]*DT), num((a['grid'][idx,t]-a['plan'][idx,t])*DT)] for t in ts],
+           [[interval(t).replace('-','--'), num(a['plan'][idx,t]*DT), num(a['grid'][idx,t]*DT), num((a['grid'][idx,t]-a['plan'][idx,t])*DT)] for t in ts],
            'tab:q3_plan_adjust')
 
 save_table('annual','2--12月主模型费用分解（单位：万元）',['模型','计划费','上调费','下调净费','紧急费','总费用'],[[LABELS[k]]+[num(S['cases'][k][field]/10000) for field in ['plan_cost','up_cost','down_cost','emergency_cost','total_cost']] for k in ['q2','q3','q4_2','q4_3']],'tab:annual')
 save_table('risk_compare','问题2是否纳入历史误差风险的比较',['方案','计划电量/万kWh','紧急电量/kWh','紧急天数','总费用/万元'],[[LABELS[k],num(S['cases'][k]['plan_kwh']/1e4),num(S['cases'][k]['emergency_kwh']),S['cases'][k]['emergency_days'],num(S['cases'][k]['total_cost']/1e4)] for k in ['q2_nominal','q2']],'tab:risk')
-frequency_keys=['q3_daily','q3_06','q3_noon','q3_018','q3_0612','q3_01218','q3_0618','q3']
-save_table('frequency','问题3不同预报更新频率的比较（加罚主口径）',
-           ['使用的预报时刻','计划费/元','上调费/元','下调净费/元','紧急量/kWh','紧急费/元','总费用/元','起末SOC/kWh'],
-           [[('0、6、12、18时' if k=='q3' else LABELS[k]),num(S['cases'][k]['plan_cost']),num(S['cases'][k]['up_cost']),num(S['cases'][k]['down_cost']),num(S['cases'][k]['emergency_kwh']),num(S['cases'][k]['emergency_cost']),num(S['cases'][k]['total_cost']),f"{num(S['cases'][k]['start_energy'])}/{num(S['cases'][k]['end_energy'])}"] for k in frequency_keys],
-           'tab:frequency')
-save_table('settlement','两种结算口径的敏感性比较',['价格条件与口径','下调电量/kWh','下调净费/元','总费用/元'],[[label,num(S['cases'][k]['down_kwh']),num(S['cases'][k]['down_cost']),num(S['cases'][k]['total_cost'])] for k,label in [('q3','重复日内价，主口径'),('q3_refund','重复日内价，退费'),('q4_3','波动电价，主口径'),('q4_3_refund','波动电价，退费')]],'tab:settlement')
+save_table('frequency','问题3不同预报更新频率的比较',['预报时刻','上调费/元','下调净费/元','紧急电量/kWh','总费用/元'],[[('0、6、12、18时' if k=='q3' else LABELS[k]),num(S['cases'][k]['up_cost']),num(S['cases'][k]['down_cost']),num(S['cases'][k]['emergency_kwh']),num(S['cases'][k]['total_cost'])] for k in ['q3_daily','q3_noon','q3']],'tab:frequency')
+save_table('settlement','两种结算口径的对照比较',['价格条件与口径','下调电量/kWh','下调净费/元','总费用/元'],[[label,num(S['cases'][k]['down_kwh']),num(S['cases'][k]['down_cost']),num(S['cases'][k]['total_cost'])] for k,label in [('q3','重复日内价，主口径'),('q3_additive','重复日内价，不退原费'),('q4_3','波动电价，主口径'),('q4_3_additive','波动电价，不退原费')]],'tab:settlement')
 save_table('price_information','波动电价下价格信息的作用',['模型与信息','计划费/万元','紧急电量/kWh','总费用/万元','等效循环'],[[label,num(S['cases'][k]['plan_cost']/1e4),num(S['cases'][k]['emergency_kwh']),num(S['cases'][k]['total_cost']/1e4),num(S['cases'][k]['equivalent_cycles'])] for k,label in [('q4_2','日前，价格预测'),('q4_2_known','日前，价格已知'),('q4_3','滚动，价格预测'),('q4_3_known','滚动，价格已知')]],'tab:price_information')
 save_table('window','问题3历史误差窗口的敏感性比较',['历史窗口/天','紧急电量/kWh','总费用/元','2月初SOC/kWh','年底SOC/kWh'],[[w,num(S['cases'][k]['emergency_kwh']),num(S['cases'][k]['total_cost']),num(S['cases'][k]['start_energy']),num(S['cases'][k]['end_energy'])] for w,k in [(7,'q3_history7'),(14,'q3'),(28,'q3_history28')]],'tab:window')
-save_table('issued_forecast','附件3光伏预报误差诊断（2月1日--12月31日）',['发布时间','相同目标6小时MAE','RMSE','WAPE','发布后剩余全天MAE'],[[f'{k}时',num(v['six_hour']['mae']),num(v['six_hour']['rmse']),f"{100*v['six_hour']['wape']:.2f}\\%",num(v['remaining_day']['mae'])] for k,v in D['issued_pv'].items() if k.isdigit()],'tab:issued_forecast')
-save_table('update_robustness','问题3更新相对仅0时的月度差异（元、kWh）',['月份','费用差（仅0时-四次更新）','紧急电量差（四次-仅0时）'],[[m,num(v),num(D['update_emergency_by_month'][m])] for m,v in D['update_cost_by_month'].items()] if 'update_cost_by_month' in D else [],'tab:update_robustness')
+save_table('issued_forecast','同一目标区间的光伏预报误差比较（2--12月，kW）',['目标区间','历史MAE','0时预报MAE','本次预报MAE','本次RMSE'],[[f'{k}--{int(k)+6}时',num(v['historical_same_block']['mae']),num(v['zero_same_block']['mae']),num(v['six_hour']['mae']),num(v['six_hour']['rmse'])] for k,v in D['issued_pv'].items() if k.isdigit()],'tab:issued_forecast')
+save_table('update_robustness','问题3更新相对仅0时的月度差异（差值均为仅0时减四次）',['月份','费用差/元','紧急电量差/kWh'],[[m,num(v),num(D['update_emergency_by_month'][m])] for m,v in D['update_cost_by_month'].items()],'tab:update_robustness')
 fb=D['feedback_benchmark']
-save_table('feedback_benchmark','固定常规购电计划下的储能反馈对照（2--12月）',['反馈规则','总费用/元','紧急购电/kWh','末日SOC/kWh','较便宜日期','较贵日期'],[['即时优先放电',num(fb['base_total_cost']),num(fb['base_emergency_kwh']),num(fb['base_end_soc']),'-','-'],['36时段预测缺额保留',num(fb['reserve_total_cost']),num(fb['reserve_emergency_kwh']),num(fb['reserve_end_soc']),fb['cheaper_days'],fb['more_expensive_days']]],'tab:feedback_benchmark')
+save_table('feedback_benchmark','固定购电计划的储能反馈对照（2--12月）',['反馈规则','总费用/万元','紧急量/MWh','年底SOC/kWh'],[['即时放电',num(fb['base_total_cost']/1e4),num(fb['base_emergency_kwh']/1e3),num(fb['base_end_soc'])],['36时段保留',num(fb['reserve_total_cost']/1e4),num(fb['reserve_emergency_kwh']/1e3),num(fb['reserve_end_soc'])]],'tab:feedback_benchmark')
 save_table('scenario_diagnostic','场景时间配对诊断：2025年9月23日',['指标','原始轨迹','逐时打乱','差值'],[["LP代理目标/元",num(D['scenario_shuffle']['original_objective']),num(D['scenario_shuffle']['permuted_objective']),num(D['scenario_shuffle']['objective_difference'])],["固定计划实际反馈费/元",num(D['scenario_shuffle']['original_feedback_cost']),num(D['scenario_shuffle']['permuted_feedback_cost']),num(D['scenario_shuffle']['permuted_feedback_cost']-D['scenario_shuffle']['original_feedback_cost'])]],'tab:scenario_diagnostic')
 save_table('runtime','主模型的实测运行时间（含全年初始化）',['模型','LP次数','LP耗时/s','全年仿真/s'],[[LABELS[k],S['cases'][k]['solves'],num(S['cases'][k]['lp_seconds']),num(S['cases'][k]['seconds'])] for k in ['q2','q3','q4_2','q4_3']],'tab:runtime')
-save_table('forecast','历史预测方法的验证与测试误差',['变量','选定方法','1月验证MAE','2--12月MAE','2--12月RMSE','2--12月WAPE'],[[label,method,num(S['january_validation'][k][S['selected_forecasts'][k]]['mae']),num(D['historical'][k]['mae']) if k!='price' else f"{D['historical'][k]['mae']:.4f}",num(D['historical'][k]['rmse']) if k!='price' else f"{D['historical'][k]['rmse']:.4f}",f"{100*D['historical'][k]['wape']:.2f}\\%"] for k,label,method in [('load','负载/kW','同星期均值'),('pv','光伏/kW','7日移动均值'),('price','电价/(元/kWh)','同星期均值')]],'tab:forecast')
+save_table('forecast','历史预测误差（1月验证，2--12月测试）',['变量','选定方法','验证MAE','测试MAE','测试RMSE','测试WAPE'],[[label,method,num(S['january_validation'][k][S['selected_forecasts'][k]]['mae']),num(D['historical'][k]['mae']) if k!='price' else f"{D['historical'][k]['mae']:.4f}",num(D['historical'][k]['rmse']) if k!='price' else f"{D['historical'][k]['rmse']:.4f}",f"{100*D['historical'][k]['wape']:.2f}\\%"] for k,label,method in [('load','负载/kW','同星期均值'),('pv','光伏/kW','7日移动均值'),('price','电价/(元/kWh)','同星期均值')]],'tab:forecast')
+save_table('blend_weights','仅由1月15--31日剩余当日MAE确定的发布预报权重',
+           ['发布时间','发布预报权重','历史预测权重','验证MAE/kW'],
+           [[f'{i*6}时',num(w),num(1-w),num(S['january_validation']['pv_blend'][str(i*6)][str(w)])]
+            for i,w in enumerate(S['selected_forecasts']['pv_blend_weights'])],'tab:blend_weights')
+save_table('blend_results','预报融合的样本外费用对照（2--12月，主结算口径）',
+           ['价格与预报','计划费/万元','调整净费/万元','紧急量/kWh','总费用/万元'],
+           [[label,num(S['cases'][k]['plan_cost']/1e4),num((S['cases'][k]['up_cost']+S['cases'][k]['down_cost'])/1e4),num(S['cases'][k]['emergency_kwh']),num(S['cases'][k]['total_cost']/1e4)]
+            for k,label in [('q3','重复价，发布预报'),('q3_blend','重复价，融合预报'),('q4_3','波动价，发布预报'),('q4_3_blend','波动价，融合预报')]],'tab:blend_results')
 
 font_candidates = [
+    Path('C:/Windows/Fonts/msyh.ttc'),
     Path('/tmp/.TinyTeX/texmf-dist/fonts/opentype/public/fandol/FandolHei-Regular.otf'),
     Path('/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'),
     Path('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc'),
@@ -131,19 +136,10 @@ months_report = np.arange(2, 13)
 diff_month = np.array([D['update_cost_by_month'][str(m)] for m in months_report]) / 10000
 ax.axhline(0, color=GRAY, lw=.8)
 ax.bar(months_report, diff_month, color=[GREEN if x >= 0 else ORANGE for x in diff_month], width=.65)
-ax.set_xlabel('月份'); ax.set_ylabel('费用差 / 万元\\n（仅0时 - 四次更新）'); ax.set_xticks(months_report)
+ax.set_xlabel('月份'); ax.set_ylabel('费用差 / 万元\n（仅0时 - 四次更新）'); ax.set_xticks(months_report)
 fig.savefig(F/'update_robustness.pdf'); plt.close(fig)
 
-# 预报时刻组合消融：费用与紧急购电量同时展示，避免只用三档频率得出结论。
-freq_labels=[LABELS[k] for k in frequency_keys]
-freq_cost=np.array([S['cases'][k]['total_cost']/10000 for k in frequency_keys])
-freq_em=np.array([S['cases'][k]['emergency_kwh']/1000 for k in frequency_keys])
-fig, ax1 = plt.subplots(figsize=(8.0,3.8), layout='constrained')
-x=np.arange(len(frequency_keys)); ax1.bar(x,freq_cost,color=BLUE,width=.62,label='总费用'); ax1.set_ylabel('总费用 / 万元'); ax1.set_xticks(x,freq_labels,rotation=25,ha='right');
-ax2=ax1.twinx(); ax2.plot(x,freq_em,'o-',color=ORANGE,label='紧急购电'); ax2.set_ylabel('紧急购电量 / MWh')
-ax1.set_title('问题3预报时刻组合消融（加罚主口径）'); fig.savefig(F/'q3_frequency.pdf'); plt.close(fig)
-
-idx=INDEX[2];a=CASES['q3'];fig,ax=plt.subplots(2,1,figsize=(7,4.5),sharex=True,layout='constrained')
+idx=INDEX[0];a=CASES['q3'];fig,ax=plt.subplots(2,1,figsize=(7,4.5),sharex=True,layout='constrained')
 ax[0].step(hours,a['plan'][idx]/1000,label='0时计划',color=GRAY,where='post');ax[0].step(hours,a['grid'][idx]/1000,label='最终常规购电',color=BLUE,where='post');ax[0].plot(hours,a['emergency'][idx]/1000,label='紧急购电',color=ORANGE);ax[0].set_ylabel('购电功率 / MW');ax[0].legend(ncol=3,fontsize=8)
 ax[1].plot(np.arange(145)/6,a['energy'][idx]/1000,color=GREEN,label='实际储电量');ax[1].set_ylabel('储电量 / MWh');ax[1].set_xlabel('时刻 / h');ax[1].legend();ax[1].set_xticks(np.arange(0,25,6));ax[1].set_xlim(0,24)
 for axis in ax:
@@ -156,11 +152,41 @@ for k,color in [('q4_3',BLUE),('q4_3_known',GREEN)]:ax[1].plot(np.arange(145)/6,
 ax[1].set_ylabel('储电量 / MWh');ax[1].set_xlabel('时刻 / h');ax[1].set_xlim(0,24);ax[1].set_xticks(np.arange(0,25,4));ax[1].legend(ncol=2);fig.savefig(F/'q4_price.pdf');plt.close(fig)
 
 fig,ax=plt.subplots(figsize=(7,3.5),layout='constrained');keys=['q2','q3','q4_2','q4_3'];x=np.arange(4);bottom=np.zeros(4)
-for fld,label,color in [('plan_cost','计划费',BLUE),('up_cost','调整上调费',ORANGE),('emergency_cost','紧急费',GREEN)]:
-    val=np.array([S['cases'][k][fld]/10000 for k in keys]);ax.bar(x,val,bottom=bottom,label=label,color=color,width=.55);bottom+=val
+components=[('实际履行原计划费',BLUE,lambda x:x['plan_cost']+2*x['down_cost']),
+            ('取消违约费',GRAY,lambda x:-x['down_cost']),
+            ('上调购电费',ORANGE,lambda x:x['up_cost']),
+            ('紧急费',GREEN,lambda x:x['emergency_cost'])]
+for label,color,compute in components:
+    val=np.array([compute(S['cases'][k])/10000 for k in keys]);ax.bar(x,val,bottom=bottom,label=label,color=color,width=.55);bottom+=val
+assert np.allclose(bottom,[S['cases'][k]['total_cost']/1e4 for k in keys])
 for xx,yy in zip(x,bottom):ax.text(xx,yy+8,f'{yy:.2f}',ha='center',fontsize=9)
-ax.set_xticks(x,[LABELS[k] for k in keys]);ax.set_ylabel('费用 / 万元');ax.set_ylim(0,max(bottom)*1.15);ax.legend(ncol=3,loc='upper left');fig.savefig(F/'annual_costs.pdf');plt.close(fig)
+ax.set_xticks(x,[LABELS[k] for k in keys]);ax.set_ylabel('费用 / 万元');ax.set_ylim(0,max(bottom)*1.18);ax.legend(ncol=2,loc='upper left');fig.savefig(F/'annual_costs.pdf');plt.close(fig)
 
-metrics={'typical':typical,'monthly':monthly,'frequency':{k:{name:S['cases'][k][name] for name in ('plan_cost','up_cost','down_cost','emergency_kwh','emergency_cost','total_cost','start_energy','end_energy')} for k in frequency_keys},'q1_saving_percent':100*(1-float(Q['objective'])/S['q1']['net_cost']),'q2_risk_saving_percent':100*(1-S['cases']['q2']['total_cost']/S['cases']['q2_nominal']['total_cost']),'q3_frequency_saving_percent':100*(1-S['cases']['q3']['total_cost']/S['cases']['q3_daily']['total_cost']),'q3_emergency_reduction_percent':100*(1-S['cases']['q3']['emergency_kwh']/S['cases']['q3_daily']['emergency_kwh'])}
+metrics={'typical':typical,'monthly':monthly,'q1_saving_percent':100*(1-float(Q['objective'])/S['q1']['net_cost']),'q2_risk_saving_percent':100*(1-S['cases']['q2']['total_cost']/S['cases']['q2_nominal']['total_cost']),'q3_frequency_saving_percent':100*(1-S['cases']['q3']['total_cost']/S['cases']['q3_daily']['total_cost']),'q3_emergency_reduction_percent':100*(1-S['cases']['q3']['emergency_kwh']/S['cases']['q3_daily']['emergency_kwh'])}
 (R/'analysis_metrics.json').write_text(json.dumps(metrics,ensure_ascii=False,indent=2),encoding='utf-8')
+cases=S['cases']
+derived={'case_count':len(cases)}
+for token,base,other in [('frequency','q3_daily','q3'),('noon','q3_noon','q3'),('q3_vs_q2','q2','q3'),
+                         ('price2','q4_2','q4_2_known'),('price3','q4_3','q4_3_known'),
+                         ('settlement3','q3_additive','q3'),('settlement4','q4_3_additive','q4_3'),
+                         ('blend3','q3','q3_blend'),('blend4','q4_3','q4_3_blend')]:
+    derived[token+'_saving']=cases[base]['total_cost']-cases[other]['total_cost']
+    derived[token+'_percent']=100*derived[token+'_saving']/cases[base]['total_cost']
+derived['frequency_em_percent']=100*(1-cases['q3']['emergency_kwh']/cases['q3_daily']['emergency_kwh'])
+derived.update(D['update_days'])
+for k in ('q3','q4_3'):
+    for row,idx in zip(typical[k],INDEX):
+        token=k+'d'+row['date'][5:].replace('-','')
+        delta=CASES[k]['grid'][idx]-CASES[k]['plan'][idx]
+        cases[token]={'plan':row['plan'],'grid':row['grid'],'emergency':row['emergency'],
+                      'total':row['cost'][4],'up_cost':row['cost'][1],'down_cost':row['cost'][2],
+                      'up':float(np.maximum(delta,0).sum()*DT),'down':float(np.maximum(-delta,0).sum()*DT)}
+groups=dict(cases,derived=derived)
+macro_lines=['% Automatically generated; do not edit numerical values by hand.']
+for group,values in groups.items():
+    for field,value in values.items():
+        if isinstance(value,(int,float)):
+            rendered=str(value) if isinstance(value,int) else num(value)
+            macro_lines.append('\\expandafter\\def\\csname result'+group+field+'\\endcsname{'+rendered+'}')
+(T/'metrics.tex').write_text('\n'.join(macro_lines)+'\n',encoding='utf-8')
 print(json.dumps({'q1':S['q1'],'metrics':{k:v for k,v in metrics.items() if k not in ['typical','monthly']},'typical':typical},ensure_ascii=False))

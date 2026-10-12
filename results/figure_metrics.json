@@ -1,0 +1,128 @@
+{
+  "source": "Existing trajectories; 2025-02-01 to 2025-12-31 unless stated otherwise",
+  "plot_style": "White background, fine boxed axes, restrained grid, differentiated lines and markers; MATLAB palette",
+  "main_result_checks": "passed",
+  "figures": [
+    {
+      "file": "energy_network.pdf",
+      "data_or_definition": "Equipment parameters and balance/SOC equations; conceptual diagram, not measured data"
+    },
+    {
+      "file": "study_flow.pdf",
+      "data_or_definition": "Four-problem modeling architecture and information boundary"
+    },
+    {
+      "file": "q1_dispatch.pdf",
+      "data_or_definition": "q1.npz: 144 period bus-side power, 145 SOC boundaries"
+    },
+    {
+      "file": "input_profiles.pdf",
+      "data_or_definition": "inputs_processed.npz: ex-post monthly mean power; descriptive only"
+    },
+    {
+      "file": "forecast_errors.pdf",
+      "data_or_definition": "inputs_processed.npz: all 48096 holdout periods, prediction minus actual; histogram percentages"
+    },
+    {
+      "file": "information_timeline.pdf",
+      "data_or_definition": "Rolling algorithm: schematic publication time and action horizon, not result intervals"
+    },
+    {
+      "file": "soc_continuity.pdf",
+      "data_or_definition": "q2.npz: actual SOC, 2025-09-22 00:00 to 2025-09-25 00:00"
+    },
+    {
+      "file": "emergency_heatmap.pdf",
+      "data_or_definition": "q2/q3.npz: bus-side emergency power times 1/6 h; all report dates and shared linear scale"
+    },
+    {
+      "file": "monthly_comparison.pdf",
+      "data_or_definition": "q2/q3.npz: sum by calendar month, February to December"
+    },
+    {
+      "file": "settlement_curve.pdf",
+      "data_or_definition": "Piecewise contract equations: original plan 5 kWh, price 1 yuan/kWh; emergency excluded"
+    },
+    {
+      "file": "gate_flow.pdf",
+      "data_or_definition": "Same-information candidate gate defined in paper; no extra adjustment-fee subtraction"
+    },
+    {
+      "file": "q3_typical.pdf",
+      "data_or_definition": "q3.npz: 2025-03-20; active intervals use bus-side power > 1e-7 kW"
+    },
+    {
+      "file": "update_robustness.pdf",
+      "data_or_definition": "q3_daily minus q3 actual daily fees; monthly sums and sequential cumulative sum"
+    },
+    {
+      "file": "q4_price.pdf",
+      "data_or_definition": "inputs_processed, q4_3 and q4_3_known; 2025-06-21"
+    },
+    {
+      "file": "annual_costs.pdf",
+      "data_or_definition": "summary.json: four nonnegative settlement components, right panel expands three smaller components"
+    },
+    {
+      "file": "parameter_sensitivity.pdf",
+      "data_or_definition": "summary.json holdout window costs; refinements.json January inventory-adjusted terminal validation scores"
+    },
+    {
+      "file": "strategy_gains.pdf",
+      "data_or_definition": "Each independent refinement against its own stated baseline; economic selection versus dedicated MAE control; gains cannot be added"
+    },
+    {
+      "file": "forecast_updates.pdf",
+      "data_or_definition": "diagnostics.json issued_pv: historical/zero/current publication compared over identical target six-hour blocks"
+    }
+  ],
+  "load_forecast": {
+    "n": 48096,
+    "mae_kw": 188.88014449018627,
+    "rmse_kw": 262.061361284533,
+    "mean_error_kw": 4.918329404732212
+  },
+  "pv_forecast": {
+    "n": 48096,
+    "mae_kw": 153.399706724943,
+    "rmse_kw": 303.85773925555964,
+    "mean_error_kw": 2.7692022125392066
+  },
+  "daily_update_saving": {
+    "total_yuan": 367492.9565863409,
+    "min_yuan": -4935.843938648992,
+    "max_yuan": 23894.574069134047,
+    "more_expensive_days": 67
+  },
+  "trace_sha256": {
+    "inputs_processed.npz": "5a80df914b14015a1feb26b10816bcd2746f43235fdd941ee655c07bd21f4f55",
+    "q1.npz": "4d29833c7252d2103c2060bb536e4f8196c9e993c423a2a5c1e1db4aeec78e1a",
+    "q2.npz": "d5b9307c70f2629adc0eb606bc86526082fbdf54c66d80515da5953a64ea766a",
+    "q2_daily_oracle.npz": "0816eb6e32bc42488ca08dafb27e5f4119ea1b6c18297a1a99c0476453f58102",
+    "q2_economic.npz": "67cdf75d147f9bf6ceebe4ef27dd36d99df28321f2f61a7ad831b313e72325f4",
+    "q2_full_oracle.npz": "3678e817b9546abae4cdef16076b6c8251fdd265549a232bbfeb8e656f9c85eb",
+    "q2_mae_control.npz": "7eb48cc02ebe9f9246cd3ab4844b3bb453effd9be5f6718dd701a64009f013bc",
+    "q2_nominal.npz": "3538b9489e357d284efbe496e70bfeff7b8322ba26c9bd5f28f1f8128e2ad64d",
+    "q2_terminal.npz": "d5b9307c70f2629adc0eb606bc86526082fbdf54c66d80515da5953a64ea766a",
+    "q3.npz": "f9d30df3e45a118de892813215787a9805823e20cf6943584305d42719770050",
+    "q3_additive.npz": "5f069c1561c3e9b1ea0e7059895a9f63295c2041fd3621ea9c5d5a22e7ffaf41",
+    "q3_blend.npz": "7e512b8c7629d66fa983f2aae2b8fad8e2020824e87c3791998a17413d7d679c",
+    "q3_daily.npz": "da1b102f1456b81ce8cbe0d13d5db9968c4af3c2d7360f3f973e91fbad2fd557",
+    "q3_gate.npz": "a921d81ef2a963eeffd616665569a428a5bcf4f14884b8dba5cb43090bad81cb",
+    "q3_history28.npz": "52e1a2e455165342a7cef7cb155d26a44f17c2861c844bf1dcf320d2f6206b2e",
+    "q3_history7.npz": "8cd6b97b5504c005d067819ad274eec2af6a9b760d28b2016d82e9aa6cd56a92",
+    "q3_noon.npz": "4d5b6b181b883eb430b908b40114c04d5ba819a4e2c7f7457e077d1e1190646f",
+    "q4_2.npz": "4b90fe5c7a3d286dc329167ab9516422fc401b8e62da0b18d04296bb00614bf4",
+    "q4_2_daily_oracle.npz": "c75fa561e9a9d03d6015eb08312cec0a6ee19e3dd20dffa1ccfa331163f7b67f",
+    "q4_2_economic.npz": "33eaa432f856f8da5bdf2aa0e2f0b038b0cefc8fdf8c0baa07c1ed13a0ed936c",
+    "q4_2_full_oracle.npz": "97e2708896cfc601fe85c970edc514c2a2af6e9d346207b94e5d1fbe1bab2073",
+    "q4_2_known.npz": "b76e51770526aad894c61cbf1b6dc64dddb1d35939ddb641988aaffe77b9e2fd",
+    "q4_2_mae_control.npz": "ae118e9a26824266a1460d41878985a8ef4a65f2456798353b4cf139574edb72",
+    "q4_2_terminal.npz": "e2e3d3c1e44627d0866d60b25d1a044d3ccbdda014a2c4813c61485261022cab",
+    "q4_3.npz": "18dc4528547d8051d332ae4058466d847e197723e811681b8541836f0a79d58b",
+    "q4_3_additive.npz": "b11037864a97db2fdf137277f45fb821d23155ec774595b5f1527885516ecbea",
+    "q4_3_blend.npz": "f19d95117560d0ccc59f70af0781c335b6ca55b779ba38c66becf9f9ba0be0c8",
+    "q4_3_gate.npz": "2820e4d3dfb400eb58d6f29041645716a2ceb89e28eda755ac27b5cec18e3f94",
+    "q4_3_known.npz": "1c3427d687e3fd6978134200e2a778835b51678b39101769a1d9a150585975d7"
+  }
+}

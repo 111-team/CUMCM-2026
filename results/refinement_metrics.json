@@ -1,0 +1,18 @@
+{
+  "q2oracle_gap": 1637088.936269654,
+  "q2terminal_saving": 0.0,
+  "q2economic_saving": -6438.547845125198,
+  "q2economic_increase": 6438.547845125198,
+  "q4_2oracle_gap": 1841516.5661961343,
+  "q4_2terminal_saving": 12447.739598805085,
+  "q4_2economic_saving": -5914.357852978632,
+  "q4_2economic_increase": 5914.357852978632,
+  "q3gate_saving": 5629.092643264681,
+  "q3gate_percent": 0.04126035008897525,
+  "q3gate_negative": 119,
+  "q3gate_ties": 271,
+  "q4_3gate_saving": 6601.79203264229,
+  "q4_3gate_percent": 0.04583408770417105,
+  "q4_3gate_negative": 130,
+  "q4_3gate_ties": 263
+}

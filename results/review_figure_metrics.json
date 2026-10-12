@@ -1,0 +1,25 @@
+{
+  "figures": [
+    {
+      "file": "unused_energy.pdf",
+      "source": "review_diagnostics.json q2_energy; source attribution conditional on PV-first load; no new cash fee"
+    },
+    {
+      "file": "risk_tradeoff.pdf",
+      "source": "review_risk{2,3,5,8}.npz; common 2025-02-01 initial SOC; actual emergency price remains 5 times"
+    },
+    {
+      "file": "efficiency_interpretation.pdf",
+      "source": "Independent LP in review_experiments.py, same attachment1 and same capacity and endpoints; different efficiencies"
+    },
+    {
+      "file": "proxy_and_gate.pdf",
+      "source": "diagnostics.json scenario_shuffle and refinements.json q3_gate; separate diagnostics, not causal relation"
+    }
+  ],
+  "source_hashes": {
+    "review_diagnostics.json": "37f78117882b3668d92bbc7e91e727967561ef0e856742b45b2fcd170f11c108",
+    "diagnostics.json": "e005265fd0b9e858bcfc74ff277df96ae8452f7d2eb60b1d387cf148448da629",
+    "refinements.json": "abbe9f1aa8f96dc8429102af10d4f9f296264ed50ffdbf4bbdbdd2b8275f2d78"
+  }
+}

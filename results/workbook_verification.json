@@ -1,0 +1,47 @@
+{
+  "result2.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q2",
+    "total_cost": 13863865.659929069
+  },
+  "result3.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q3",
+    "total_cost": 13642862.048251932
+  },
+  "result4-2.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q4_2",
+    "total_cost": 14621415.170667117
+  },
+  "result4-3.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q4_3",
+    "total_cost": 14403672.81934905
+  },
+  "补充\\补充_价格已知_result4-2.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q4_2_known",
+    "total_cost": 14516845.567692673
+  },
+  "补充\\补充_价格已知_result4-3.xlsx": {
+    "days": 334,
+    "quantity_cost_storage_events": "passed",
+    "settlement": "refund",
+    "case": "q4_3_known",
+    "total_cost": 14283321.564147
+  },
+  "result1.xlsx": {
+    "quantity_storage": "passed"
+  }
+}

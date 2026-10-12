@@ -32,8 +32,13 @@ def run(data_root, out_root):
         truth_block, truth_rest = data['pv'][sl, block], data['pv'][sl, rest]
         pred = fc['issued'][sl, issue]
         report['issued_pv'][str(issue * 6)] = {
+            'target_hours': [issue*6, issue*6+6],
+            'historical_same_block': metrics(fc['pv'][sl,block]-truth_block,truth_block),
+            'zero_same_block': metrics(fc['issued'][sl,0,block]-truth_block,truth_block),
             'six_hour': metrics(pred[:, block] - truth_block, truth_block),
             'remaining_day': metrics(pred[:, rest] - truth_rest, truth_rest),
+            'blend_weight': selected['pv_blend_weights'][issue],
+            'blend_same_block': metrics(fc['issued_blend'][sl,issue,block]-truth_block,truth_block),
         }
     report['issued_pv']['historical_full_day'] = metrics(
         fc['pv'][sl] - data['pv'][sl], data['pv'][sl])
@@ -118,5 +123,5 @@ def run(data_root, out_root):
 
 if __name__ == '__main__':
     import argparse
-    ap = argparse.ArgumentParser(); ap.add_argument('--data', required=True); ap.add_argument('--out', default='results')
+    ap = argparse.ArgumentParser(); ap.add_argument('--data', required=True); ap.add_argument('--out', default=Path(__file__).resolve().parents[1]/'results')
     a = ap.parse_args(); run(a.data, a.out)

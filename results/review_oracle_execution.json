@@ -1,0 +1,1693 @@
+{
+  "purpose": "同一计划、同一实际负荷与光伏下，日内执行改为当日完全预知的最优调度",
+  "report_period": "2025-02-01 to 2025-12-31",
+  "python": "3.12.3",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "inventory_value_yuan_per_kwh": 0.40402749999999993,
+  "base_total_cost": 13863865.659929069,
+  "base_end_energy": 1552.8001319378277,
+  "oracle_total_cost": 13801570.471782876,
+  "oracle_end_energy": 1200.0,
+  "cash_saving": 62295.18814619258,
+  "inventory_adjusted_base": 13867012.28705167,
+  "inventory_adjusted_oracle": 13804859.639860783,
+  "inventory_adjusted_saving": 62152.64719088748,
+  "saving_percent_of_base": 0.4493349089947205,
+  "oracle_emergency_kwh": 127996.36471080924,
+  "base_emergency_kwh": 85480.78953100595,
+  "oracle_spill_kwh": 2765096.981870648,
+  "base_spill_kwh": 2753492.484433683,
+  "daily": [
+    {
+      "date_index": 31,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 32,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 33,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 34,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 35,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 36,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 37,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 38,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 39,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 40,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 41,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 42,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 43,
+      "emergency_kwh": 0.0,
+      "end_energy": 1222.7786250000004
+    },
+    {
+      "date_index": 44,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 45,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 46,
+      "emergency_kwh": 12.227500000000115,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 47,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 48,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 49,
+      "emergency_kwh": 57.39583333333318,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 50,
+      "emergency_kwh": 10.19080773809522,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 51,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 52,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 53,
+      "emergency_kwh": 6.67978273809543,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 54,
+      "emergency_kwh": 8.861801785714306,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 55,
+      "emergency_kwh": 42.21732142857142,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 56,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 57,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 58,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 59,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 60,
+      "emergency_kwh": 3167.5182461787253,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 61,
+      "emergency_kwh": 1754.0453476680668,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 62,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 63,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 64,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 65,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 66,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 67,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 68,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 69,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 70,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 71,
+      "emergency_kwh": 76.43253571428332,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 72,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 73,
+      "emergency_kwh": 529.7665926219853,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 74,
+      "emergency_kwh": 1.640000000000024,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 75,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 76,
+      "emergency_kwh": 625.8384112346348,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 77,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 78,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 79,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 80,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 81,
+      "emergency_kwh": 275.54634620075296,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 82,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 83,
+      "emergency_kwh": 78.68293260119135,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 84,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 85,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 86,
+      "emergency_kwh": 56.88973614285992,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 87,
+      "emergency_kwh": 82.29307810118956,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 88,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 89,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 90,
+      "emergency_kwh": 980.6299719503195,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 91,
+      "emergency_kwh": 1902.9779503453876,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 92,
+      "emergency_kwh": 295.03717870369746,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 93,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 94,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 95,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 96,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 97,
+      "emergency_kwh": 10.295736535712917,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 98,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 99,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 100,
+      "emergency_kwh": 0.0,
+      "end_energy": 1205.7855
+    },
+    {
+      "date_index": 101,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 102,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 103,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 104,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 105,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 106,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 107,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 108,
+      "emergency_kwh": 126.35801841563564,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 109,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 110,
+      "emergency_kwh": 0.0,
+      "end_energy": 1227.462
+    },
+    {
+      "date_index": 111,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 112,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 113,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 114,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 115,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 116,
+      "emergency_kwh": 434.4197687083289,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 117,
+      "emergency_kwh": 4445.605252020862,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 118,
+      "emergency_kwh": 174.12617098809926,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 119,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 120,
+      "emergency_kwh": 2256.544914880952,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 121,
+      "emergency_kwh": 2125.701144327382,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 122,
+      "emergency_kwh": 1096.4666442023768,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 123,
+      "emergency_kwh": 945.4070741666676,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 124,
+      "emergency_kwh": 513.6997685178579,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 125,
+      "emergency_kwh": 260.15662360119325,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 126,
+      "emergency_kwh": 315.70307411905117,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 127,
+      "emergency_kwh": 35.999249999999996,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 128,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 129,
+      "emergency_kwh": 216.9439086052344,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 130,
+      "emergency_kwh": 41.180716666666584,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 131,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 132,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 133,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 134,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 135,
+      "emergency_kwh": 333.59004968401206,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 136,
+      "emergency_kwh": 240.08104373897814,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 137,
+      "emergency_kwh": 1.8595833333332241,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 138,
+      "emergency_kwh": 67.0033333333334,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 139,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 140,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 141,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 142,
+      "emergency_kwh": 1327.51272450507,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 143,
+      "emergency_kwh": 1201.7902675569544,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 144,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 145,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 146,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 147,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 148,
+      "emergency_kwh": 17.817433333333305,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 149,
+      "emergency_kwh": 655.328410523225,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 150,
+      "emergency_kwh": 1069.8026280496817,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 151,
+      "emergency_kwh": 12771.061473802187,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 152,
+      "emergency_kwh": 6868.456544397421,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 153,
+      "emergency_kwh": 3120.434701029759,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 154,
+      "emergency_kwh": 1349.8671851805457,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 155,
+      "emergency_kwh": 745.4150347083329,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 156,
+      "emergency_kwh": 1621.1038083333356,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 157,
+      "emergency_kwh": 42.36224910714413,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 158,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 159,
+      "emergency_kwh": 17.484033333332867,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 160,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 161,
+      "emergency_kwh": 4.808749999999994,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 162,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 163,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 164,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 165,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 166,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 167,
+      "emergency_kwh": 8.13000000000026,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 168,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 169,
+      "emergency_kwh": 26.17749999999993,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 170,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 171,
+      "emergency_kwh": 179.07234657555546,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 172,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 173,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 174,
+      "emergency_kwh": 3358.929532278803,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 175,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 176,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 177,
+      "emergency_kwh": 85.62840290270461,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 178,
+      "emergency_kwh": 533.2498539241607,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 179,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 180,
+      "emergency_kwh": 20.893303571428834,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 181,
+      "emergency_kwh": 3706.2753988428194,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 182,
+      "emergency_kwh": 2042.6117748273837,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 183,
+      "emergency_kwh": 4647.8825320614305,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 184,
+      "emergency_kwh": 2527.0621955892866,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 185,
+      "emergency_kwh": 1482.2604437083314,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 186,
+      "emergency_kwh": 3641.721633014766,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 187,
+      "emergency_kwh": 243.5231314702367,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 188,
+      "emergency_kwh": 166.2032281487983,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 189,
+      "emergency_kwh": 44.9695833333332,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 190,
+      "emergency_kwh": 21.792916666666464,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 191,
+      "emergency_kwh": 300.0046377057612,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 192,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 193,
+      "emergency_kwh": 62.51014285714291,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 194,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 195,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 196,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 197,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 198,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 199,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 200,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 201,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 202,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 203,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 204,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 205,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 206,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 207,
+      "emergency_kwh": 757.302457113467,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 208,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 209,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 210,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 211,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 212,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 213,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 214,
+      "emergency_kwh": 41.671760119047725,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 215,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 216,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 217,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 218,
+      "emergency_kwh": 25.495450595237948,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 219,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 220,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 221,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 222,
+      "emergency_kwh": 77.55141845238086,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 223,
+      "emergency_kwh": 591.9216188345098,
+      "end_energy": 1241.917875
+    },
+    {
+      "date_index": 224,
+      "emergency_kwh": 75.9028845238096,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 225,
+      "emergency_kwh": 81.71491964285693,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 226,
+      "emergency_kwh": 58.428245821429506,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 227,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 228,
+      "emergency_kwh": 69.91144523809528,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 229,
+      "emergency_kwh": 141.99915952380948,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 230,
+      "emergency_kwh": 107.57127619047635,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 231,
+      "emergency_kwh": 1183.2839403145235,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 232,
+      "emergency_kwh": 12.58862321428584,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 233,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 234,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 235,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 236,
+      "emergency_kwh": 6.088749999999891,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 237,
+      "emergency_kwh": 3.0850267857141866,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 238,
+      "emergency_kwh": 22.302083333333332,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 239,
+      "emergency_kwh": 51.417899404761705,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 240,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 241,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 242,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 243,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 244,
+      "emergency_kwh": 536.1542179012372,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 245,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 246,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 247,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 248,
+      "emergency_kwh": 792.5870027083326,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 249,
+      "emergency_kwh": 1492.0472810993572,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 250,
+      "emergency_kwh": 1035.9333225823007,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 251,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 252,
+      "emergency_kwh": 2365.180673713991,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 253,
+      "emergency_kwh": 270.3760810699588,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 254,
+      "emergency_kwh": 1206.891561265431,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 255,
+      "emergency_kwh": 1091.7669737874785,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 256,
+      "emergency_kwh": 2071.9673198339237,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 257,
+      "emergency_kwh": 510.2456033750018,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 258,
+      "emergency_kwh": 562.6648430952379,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 259,
+      "emergency_kwh": 99.46529280357039,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 260,
+      "emergency_kwh": 202.66844327976213,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 261,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 262,
+      "emergency_kwh": 392.571350176368,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 263,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 264,
+      "emergency_kwh": 1038.7643824464278,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 265,
+      "emergency_kwh": 1135.53133550441,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 266,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 267,
+      "emergency_kwh": 76.3879901845221,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 268,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 269,
+      "emergency_kwh": 428.9126792989426,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 270,
+      "emergency_kwh": 5.868333333333339,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 271,
+      "emergency_kwh": 512.3381128749977,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 272,
+      "emergency_kwh": 717.4963885362364,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 273,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 274,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 275,
+      "emergency_kwh": 1355.5140301954737,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 276,
+      "emergency_kwh": 2398.9960340461503,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 277,
+      "emergency_kwh": 700.5723177836513,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 278,
+      "emergency_kwh": 492.732263073189,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 279,
+      "emergency_kwh": 1471.8570463109882,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 280,
+      "emergency_kwh": 1482.2231560920038,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 281,
+      "emergency_kwh": 437.27611812904365,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 282,
+      "emergency_kwh": 696.383796744563,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 283,
+      "emergency_kwh": 336.799966064077,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 284,
+      "emergency_kwh": 20.929933333333338,
+      "end_energy": 1236.9959999999999
+    },
+    {
+      "date_index": 285,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 286,
+      "emergency_kwh": 650.6966572648387,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 287,
+      "emergency_kwh": 955.1200027503701,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 288,
+      "emergency_kwh": 1750.4204217816678,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 289,
+      "emergency_kwh": 48.19640952381191,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 290,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 291,
+      "emergency_kwh": 653.164462518446,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 292,
+      "emergency_kwh": 372.79512976925355,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 293,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 294,
+      "emergency_kwh": 1108.6059104159372,
+      "end_energy": 1212.415124999999
+    },
+    {
+      "date_index": 295,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 296,
+      "emergency_kwh": 278.8898502023808,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 297,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 298,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 299,
+      "emergency_kwh": 19.744933333333393,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 300,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 301,
+      "emergency_kwh": 313.8046896011857,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 302,
+      "emergency_kwh": 41.683224928570766,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 303,
+      "emergency_kwh": 67.10266486904716,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 304,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 305,
+      "emergency_kwh": 169.97404761904846,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 306,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 307,
+      "emergency_kwh": 224.4711124702385,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 308,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 309,
+      "emergency_kwh": 865.4373321510129,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 310,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 311,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 312,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 313,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 314,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 315,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 316,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 317,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 318,
+      "emergency_kwh": 41.61276132143345,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 319,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 320,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 321,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 322,
+      "emergency_kwh": 1.3850000000000666,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 323,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 324,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 325,
+      "emergency_kwh": 9.368013148811997,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 326,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 327,
+      "emergency_kwh": 18.83966666666659,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 328,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 329,
+      "emergency_kwh": 32.99316666666664,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 330,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 331,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 332,
+      "emergency_kwh": 150.91901294826926,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 333,
+      "emergency_kwh": 0.04096845238109381,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 334,
+      "emergency_kwh": 4706.190421286894,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 335,
+      "emergency_kwh": 5007.617197406746,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 336,
+      "emergency_kwh": 1726.3521303865368,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 337,
+      "emergency_kwh": 1796.6882317008353,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 338,
+      "emergency_kwh": 109.63489611904936,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 339,
+      "emergency_kwh": 88.00717455953145,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 340,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 341,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 342,
+      "emergency_kwh": 16.459849999999882,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 343,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 344,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 345,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 346,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 347,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 348,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 349,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 350,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 351,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 352,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 353,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 354,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 355,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 356,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 357,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 358,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 359,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 360,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 361,
+      "emergency_kwh": 4.651309523809535,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 362,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 363,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    },
+    {
+      "date_index": 364,
+      "emergency_kwh": 0.0,
+      "end_energy": 1200.0
+    }
+  ]
+}

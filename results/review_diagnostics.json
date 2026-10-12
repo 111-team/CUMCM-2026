@@ -1,0 +1,178 @@
+{
+  "python": "3.12.14",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "report_period": "2025-02-01 to 2025-12-31",
+  "efficiency": [
+    {
+      "label": "both_0.9",
+      "eta_c": 0.9,
+      "eta_d": 0.9,
+      "cost": 35126.948589289634,
+      "grid_kwh": 59482.69899835392
+    },
+    {
+      "label": "round_trip_0.9",
+      "eta_c": 0.9486832980505138,
+      "eta_d": 0.9486832980505138,
+      "cost": 33801.495542222016,
+      "grid_kwh": 57526.24348088352
+    },
+    {
+      "label": "charging_loss_only",
+      "eta_c": 0.9,
+      "eta_d": 1.0,
+      "cost": 33416.530707032776,
+      "grid_kwh": 57580.9812962963
+    },
+    {
+      "label": "discharging_loss_only",
+      "eta_c": 1.0,
+      "eta_d": 0.9,
+      "cost": 34168.609929486105,
+      "grid_kwh": 57472.094809259266
+    }
+  ],
+  "risk_scan": [
+    {
+      "rho": 2,
+      "cost": 14812927.014805727,
+      "emergency_kwh": 434388.61354781594,
+      "spill_kwh": 1598189.855631737,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1225.5158702314818,
+      "seconds": 6.753628099999332
+    },
+    {
+      "rho": 3,
+      "cost": 13938000.6172941,
+      "emergency_kwh": 183124.16208555346,
+      "spill_kwh": 2137507.325584897,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1344.2368747222217,
+      "seconds": 5.485356300003332
+    },
+    {
+      "rho": 5,
+      "cost": 13863865.659929069,
+      "emergency_kwh": 85480.78953100595,
+      "spill_kwh": 2753492.484433683,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001319378277,
+      "seconds": 4.746103600002243
+    },
+    {
+      "rho": 8,
+      "cost": 14081214.76036844,
+      "emergency_kwh": 43736.495752273804,
+      "spill_kwh": 3346250.906221655,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1779.7040231283056,
+      "seconds": 4.191820299998653
+    }
+  ],
+  "inventory": {
+    "q2": {
+      "cash_cost": 13863865.659929069,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001319378277,
+      "consumed_kwh": 7788.150862506618,
+      "reference_adjustment": 2977.56583775353,
+      "adjustment_interval": [
+        53.27095189954527,
+        12571.944648292683
+      ]
+    },
+    "q3": {
+      "cash_cost": 13642862.048251932,
+      "start_energy": 9340.950994444445,
+      "end_energy": 1552.8001531018485,
+      "consumed_kwh": 7788.150841342596,
+      "reference_adjustment": 2977.5658296621014,
+      "adjustment_interval": [
+        53.270951754783354,
+        12571.944614128874
+      ]
+    },
+    "q4_2": {
+      "cash_cost": 14621415.170667117,
+      "start_energy": 9218.189096296297,
+      "end_energy": 1548.8507443981466,
+      "consumed_kwh": 7669.33835189815,
+      "reference_adjustment": 2932.141438697701,
+      "adjustment_interval": [
+        52.45827432698334,
+        12380.15274116807
+      ]
+    },
+    "q4_3": {
+      "cash_cost": 14403672.81934905,
+      "start_energy": 9218.189351296298,
+      "end_energy": 1548.850744398147,
+      "consumed_kwh": 7669.338606898151,
+      "reference_adjustment": 2932.141536189301,
+      "adjustment_interval": [
+        52.45827607118335,
+        12380.153152799272
+      ]
+    },
+    "q4_2_known": {
+      "cash_cost": 14516845.567692673,
+      "start_energy": 9080.29120425926,
+      "end_energy": 1532.3174513822712,
+      "consumed_kwh": 7547.973752876988,
+      "reference_adjustment": 2885.74132519993,
+      "adjustment_interval": [
+        51.6281404696786,
+        12184.241150844151
+      ]
+    },
+    "q4_3_known": {
+      "cash_cost": 14283321.564147,
+      "start_energy": 9080.29120425926,
+      "end_energy": 1532.3174725462943,
+      "consumed_kwh": 7547.973731712966,
+      "reference_adjustment": 2885.741317108501,
+      "adjustment_interval": [
+        51.628140324916686,
+        12184.24111668034
+      ]
+    }
+  },
+  "risk5_baseline_max_difference": 0.0,
+  "q2_energy": {
+    "net_kwh": 17939189.494966663,
+    "purchased_kwh": 21876484.137731776,
+    "excess_percent": 21.948007427369156,
+    "loss_kwh": 1191590.3091939327,
+    "stock_change_kwh": -7788.150862506618,
+    "spill_kwh": 2753492.484433683,
+    "pv_spill_kwh": 1490586.648724816,
+    "paid_spill_kwh": 1262905.835708867,
+    "paid_spill_cost": 744310.9767886456,
+    "spill_emergency_ratio": 32.21182793866129,
+    "peak_regular_kw": 10202.96,
+    "peak_load_kw": 7978.8849,
+    "days_with_spill": 334,
+    "regular_kwh": 21791003.34820077,
+    "paid_spill_kwh_interval": [
+      1052459.5832807093,
+      1262905.835708867
+    ],
+    "paid_spill_cost_interval": [
+      646473.9897387696,
+      744310.9767886456
+    ]
+  },
+  "inventory_value_interval": [
+    0.00684,
+    1.6142400000000001
+  ],
+  "main_cost_order": [
+    "q3",
+    "q2",
+    "q4_3",
+    "q4_2"
+  ],
+  "seconds": 0.0819164999993518
+}

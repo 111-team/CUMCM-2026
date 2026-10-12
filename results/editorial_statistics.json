@@ -1,0 +1,24 @@
+{
+  "source": "results/diagnostics.json:update_cost_by_month",
+  "definition": "monthly cost: q3_daily minus q3, yuan",
+  "n": 11,
+  "ddof": 1,
+  "values_yuan": [
+    32485.895383639945,
+    46366.64967437755,
+    21154.322236407592,
+    7519.831053350803,
+    23793.182216200068,
+    72216.30722877823,
+    28061.37902169558,
+    37140.91835076617,
+    37597.09641656531,
+    20582.32557153514,
+    40575.04943302444
+  ],
+  "mean_yuan": 33408.45059875826,
+  "sd_yuan": 16922.146150542663,
+  "min_yuan": 7519.831053350803,
+  "max_yuan": 72216.30722877823,
+  "interpretation": "descriptive month-to-month spread; not a confidence or prediction interval"
+}

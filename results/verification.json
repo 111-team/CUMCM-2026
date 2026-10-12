@@ -7,7 +7,35 @@
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
+    "q2_nominal": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
     "q3": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 2.9103830456733704e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_daily": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_noon": {
+      "max_power_residual": 9.094947017729282e-13,
+      "max_cost_residual": 5.820766091346741e-11,
+      "min_energy": 1200.0,
+      "max_energy": 10800.0,
+      "simultaneous_periods": 0
+    },
+    "q3_additive": {
       "max_power_residual": 9.094947017729282e-13,
       "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
@@ -28,34 +56,6 @@
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
-    "q2_nominal": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_daily": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_noon": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_refund": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 2.9103830456733704e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
     "q4_2_known": {
       "max_power_residual": 9.094947017729282e-13,
       "max_cost_residual": 5.820766091346741e-11,
@@ -65,21 +65,21 @@
     },
     "q4_3_known": {
       "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
+      "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
-    "q4_3_refund": {
+    "q4_3_additive": {
       "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
+      "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
     "q3_history7": {
       "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 2.1827872842550278e-11,
+      "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
@@ -91,35 +91,14 @@
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
-    "q3_06": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_018": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 2.1827872842550278e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_0612": {
-      "max_power_residual": 9.094947017729282e-13,
-      "max_cost_residual": 5.820766091346741e-11,
-      "min_energy": 1200.0,
-      "max_energy": 10800.0,
-      "simultaneous_periods": 0
-    },
-    "q3_01218": {
+    "q3_blend": {
       "max_power_residual": 9.094947017729282e-13,
       "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
       "max_energy": 10800.0,
       "simultaneous_periods": 0
     },
-    "q3_0618": {
+    "q4_3_blend": {
       "max_power_residual": 9.094947017729282e-13,
       "max_cost_residual": 2.9103830456733704e-11,
       "min_energy": 1200.0,
@@ -128,6 +107,50 @@
     }
   },
   "causality_future_perturbation": "passed (forecasts and q2 decisions through day 180)",
+  "unpublished_information_decisions": [
+    {
+      "hour": 0,
+      "pv_mode": "issued",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 0,
+      "pv_mode": "blend",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 6,
+      "pv_mode": "issued",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 6,
+      "pv_mode": "blend",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 12,
+      "pv_mode": "issued",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 12,
+      "pv_mode": "blend",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 18,
+      "pv_mode": "issued",
+      "max_grid_difference": 0.0
+    },
+    {
+      "hour": 18,
+      "pv_mode": "blend",
+      "max_grid_difference": 0.0
+    }
+  ],
+  "settlement_examples": "passed: 4.5, 5, 6.5, 2.5 yuan",
+  "input_date_time_publication_order": "passed",
   "physical_boundary_checks": "passed",
   "q1_checks": "passed"
 }

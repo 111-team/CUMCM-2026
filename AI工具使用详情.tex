@@ -1,0 +1,48 @@
+% !TeX program = xelatex
+% 不直接用 fontset=fandol 类选项：ctex 会在载入文档类时套用字体集，此时 xeCJK 的
+% 默认字体特性 Script=CJK 尚未清掉，会在日志里产生 fontspec 的无害警告。改为先以
+% fontset=none 载入，在导言区清空默认特性后再用 \ctexset 套用同一套 fandol 字体集，
+% 字体、标点映射与排版结果均不变，日志干净。
+\documentclass[UTF8,fontset=none,a4paper,zihao=5]{ctexart}
+\defaultCJKfontfeatures{}
+\ctexset{fontset=fandol}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{booktabs,array,enumitem,hyperref}
+\hypersetup{hidelinks}\setlist{nosep,leftmargin=1.6em}\linespread{1.0}\pagestyle{plain}
+\ctexset{section={format=\bfseries\normalsize,beforeskip=6pt,afterskip=3pt}}
+\begin{document}
+\begin{center}\Large\bfseries AI工具使用详情\end{center}
+\vspace{-0.2em}
+\section*{一、所用AI工具名称、版本或型号}
+使用Codex，接入大模型GPT-6和DeepSeek V4.1 Flash。
+
+\section*{二、具体使用目的和环节}
+我们用AI做了以下四件事：
+\begin{enumerate}
+\item 论文润色与压缩篇幅。对已完成初稿的语句、用词和表述作润色，并在不改变原意的前提下压缩正文篇幅。
+\item 辅助编程。我们的编程手先独立写出第一版完整代码，再找AI帮他检查、订正与优化，重点看是否有写错的地方以及哪里可以改进，AI给出建议后，编程手经权衡之后采纳有道理的部分，确保代码无误。
+\item 复核建模思路。把我们的整体思路交给AI检查，让它指出其中的逻辑错误或走不通的地方，避免我们在错误的方向上继续投入。
+\item 成稿后的全局检验与核查。论文与程序基本完成后，让AI对整体做一次全局检查与核对，把发现的问题列出来。
+\end{enumerate}
+上述四件事中，题目怎么做、模型怎么建、代码怎么改、结论怎么写，均由我们判断和决定，AI只在其中起辅助作用。
+
+\section*{三、主要提示方式与使用过程说明}
+以下是我们在各环节提问时的典型例子，仅作举例说明：
+\begin{enumerate}
+\item 论文润色与压缩：“看一下我们的初稿，请只改语句和用词，让文章符合论文要求，并在不改变原意的前提下压缩正文篇幅，要求正文部分在30页以内。不要动公式、数据和结论。”
+\item 辅助编程：“看一下xx文件的第m到m行，你检查一下这里有没有写错，有什么地方可以优化改进，仅做检查，不要直接改我的代码。”
+\item 复核思路：“看一下xx文档，我们第三问是这样想的，你觉得我们有没有理解上的偏差，看一下有没有毛病。”
+\item 全局检验：“看一下当前目录，这是我们的论文还有支撑材料，你看一下，对全文的数值、公式、图表和结论做一次全局检查，有没有问题和隐患，报告给我，仅检查，不准修改。”
+\end{enumerate}
+每轮都由我们带着具体问题和已完成的材料去提问，AI给出意见后，我们逐条判断是否采纳，再决定怎么改。
+
+\section*{四、对AI输出的采纳、人工修改和核验情况}
+\begin{enumerate}
+\item 论文润色与压缩篇幅：只采纳不改变原意、数据和结论的修改，压缩后我们会通读复核，在它的基础上补充或删减，如果AI改了公式、数据和结论，我们会退到之前的版本，并让它重新做。
+\item 辅助编程：AI指出的问题先由编程手逐条核对，只采纳成立的部分，由编程手修改，改完后重新运行确认结果正确才保留。
+\item 复核建模思路。AI提出的疑问经队伍全员讨论之后，我们觉得有道理的建议会采纳，用来修正思路或补充说明，不成立的不采纳。
+\item 全局检验与核查。AI列出的问题逐条核实，涉及数值的一律回到工作簿和结果文件复算后才改动，改动结果会由我们确认。
+\end{enumerate}
+
+其中语言润色部分，按《全国大学生数学建模竞赛人工智能工具使用规定》第四条的规定不作展开。
+\end{document}

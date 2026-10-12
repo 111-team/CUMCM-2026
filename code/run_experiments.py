@@ -31,25 +31,25 @@ def main():
       'q3':{'kind':3},
       'q3_daily':{'kind':3,'updates':(0,)},
       'q3_noon':{'kind':3,'updates':(0,12)},
-      # 预报时刻消融：固定0时基准，逐一识别6、12、18时的独立及组合贡献。
-      'q3_06':{'kind':3,'updates':(0,6)},
-      'q3_018':{'kind':3,'updates':(0,18)},
-      'q3_0612':{'kind':3,'updates':(0,6,12)},
-      'q3_01218':{'kind':3,'updates':(0,12,18)},
-      'q3_0618':{'kind':3,'updates':(0,6,18)},
-      'q3_refund':{'kind':3,'settlement':'refund'},
+      'q3_additive':{'kind':3,'settlement':'additive'},
       'q4_2':{'price_mode':'forecast'},
       'q4_3':{'kind':3,'price_mode':'forecast'},
       'q4_2_known':{'price_mode':'known'},
       'q4_3_known':{'kind':3,'price_mode':'known'},
-      'q4_3_refund':{'kind':3,'price_mode':'forecast','settlement':'refund'},
+      'q4_3_additive':{'kind':3,'price_mode':'forecast','settlement':'additive'},
       'q3_history7':{'kind':3,'history_days':7},
       'q3_history28':{'kind':3,'history_days':28},
+      'q3_blend':{'kind':3,'pv_mode':'blend'},
+      'q4_3_blend':{'kind':3,'price_mode':'forecast','pv_mode':'blend'},
     }
     summaries={}
     existing=args.out/'summary.json'
-    if existing.exists():
+    if args.cases and existing.exists():
         summaries=json.loads(existing.read_text(encoding='utf-8')).get('cases',{})
+    if args.cases:
+        unknown = set(args.cases)-set(configs)
+        if unknown:
+            raise ValueError('Unknown cases: '+', '.join(sorted(unknown)))
     for name,config in configs.items():
         if args.cases and name not in args.cases:
             continue

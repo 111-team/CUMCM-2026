@@ -1,6 +1,7 @@
 """C题：仅使用决策时刻可获得信息的预测、线性规划与执行反馈。"""
 from pathlib import Path
 from time import perf_counter
+from datetime import datetime, timedelta
 import numpy as np
 from openpyxl import load_workbook
 from scipy.optimize import linprog
@@ -24,14 +25,36 @@ def read_rows(path, sheet=0):
 def load_data(root):
     root = Path(root)
     r = read_rows(root / '附件1.xlsx')
+    expected_dates = [(datetime(2025, 1, 1)+timedelta(days=d)).date() for d in range(365)]
+    def as_date(value):
+        return value.date() if isinstance(value, datetime) else datetime.strptime(str(value), '%Y-%m-%d').date()
+    def minutes(value):
+        if hasattr(value, 'hour'):
+            return value.hour*60+value.minute
+        h, m = str(value).split('+')[0].split(':')[:2]
+        return (int(h)*60+int(m)) % 1440
+    expected_times = [(t*10) % 1440 for t in range(1, 145)]
+    assert [minutes(row[0]) for row in r[1:]] == expected_times, 'attachment 1 time order'
     one = np.asarray([row[1:] for row in r[1:]], float)
     actual = []
     for sheet in ('小区负载', '光伏发电实际功率'):
         rows = read_rows(root / '附件2.xlsx', sheet)
+        assert [as_date(row[0]) for row in rows[1:]] == expected_dates, sheet + ': date order'
+        assert [minutes(v) for v in rows[0][1:145]] == expected_times, sheet + ': time order'
         actual.append(np.asarray([row[1:145] for row in rows[1:]], float))
     dates = [row[0].strftime('%Y-%m-%d') for row in rows[1:]]
-    price = np.asarray([row[1:145] for row in read_rows(root/'附件4.xlsx')[1:]], float)
-    pv_hour = np.asarray([row[2:26] for row in read_rows(root/'附件3.xlsx')[1:]], float).reshape(365, 4, 24)
+    price_rows = read_rows(root/'附件4.xlsx')
+    assert [as_date(row[0]) for row in price_rows[1:]] == expected_dates, 'price date order'
+    assert [minutes(v) for v in price_rows[0][1:145]] == expected_times, 'price time order'
+    price = np.asarray([row[1:145] for row in price_rows[1:]], float)
+    issue_rows = read_rows(root/'附件3.xlsx')[1:]
+    assert len(issue_rows) == 1460, 'issued forecast row count'
+    for i, row in enumerate(issue_rows):
+        if row[0] not in (None, ''):
+            issue_date = as_date(row[0])
+        assert issue_date == expected_dates[i//4], 'issued forecast date order'
+        assert minutes(row[1]) == (i % 4)*360, 'forecast publication order'
+    pv_hour = np.asarray([row[2:26] for row in issue_rows], float).reshape(365, 4, 24)
     data = dict(one=one, load=actual[0], pv=actual[1], price=price, pv_hour=pv_hour, dates=dates)
     for key in ('one', 'load', 'pv', 'price', 'pv_hour'):
         assert np.isfinite(data[key]).all(), key + ': missing/nonfinite data'
@@ -81,6 +104,22 @@ def forecast_all(data):
             x = (np.arange(start, 144)+1-start)/6
             issued[day, issue, start:] = np.interp(x, np.arange(25), np.r_[current, data['pv_hour'][day, issue]])
     forecasts['issued'] = issued
+    # 融合权重只在1月15—31日确定，2月起冻结；1月热启动仍用原始发布预报。
+    historical_validation = np.asarray([predict(data['pv'][:d], data['one'][:,2], selected['pv']) for d in range(14,31)])
+    blended = issued.copy()
+    blend_scores, blend_weights = {}, []
+    for issue in range(4):
+        start = issue*36
+        block = slice(start, 144)
+        losses = {str(w): float(np.mean(abs(w*issued[14:31,issue,block]+(1-w)*historical_validation[:,block]-data['pv'][14:31,block])))
+                  for w in (0., .25, .5, .75, 1.)}
+        weight = float(min(losses, key=losses.get))
+        blend_scores[str(issue*6)] = losses
+        blend_weights.append(weight)
+        blended[31:,issue,start:] = weight*issued[31:,issue,start:]+(1-weight)*forecasts['pv'][31:,start:]
+    forecasts['issued_blend'] = blended
+    scores['pv_blend'] = blend_scores
+    selected['pv_blend_weights'] = blend_weights
     return forecasts, scores, selected
 
 
@@ -96,9 +135,12 @@ def residual_scenarios(data, forecast, day, start, issue=None, history_days=14):
     return np.vstack((nominal, nominal+errors))
 
 
-def optimize(scenarios, prices, initial, base=None, settlement='additive', cyclic=False, eta=ETA, pmax=PMAX):
+def optimize(scenarios, prices, initial, base=None, settlement='refund', cyclic=False, eta=ETA, pmax=PMAX,
+             terminal_value=0., final_energy=None):
     """稀疏LP。紧急量为场景中的缺额补救变量，实际费用由execute重新核算。"""
     start_time = perf_counter()
+    if settlement not in ('refund', 'additive'):
+        raise ValueError('Unknown settlement mode')
     s, n = scenarios.shape
     ident = eye(n, format='csr')
     zero = csr_matrix((n, n))
@@ -110,9 +152,12 @@ def optimize(scenarios, prices, initial, base=None, settlement='additive', cycli
     tile = vstack([ident]*s, format='csr')
     ub = hstack([-tile, tile, -tile, csr_matrix((s*n,n)), -eye(s*n,format='csr'), csr_matrix((s*n,extra))],format='csr')
     c = np.r_[prices*DT if base is None else np.zeros(n), np.zeros(3*n), np.tile(5*prices*DT/s,s)]
+    c[4*n-1] -= terminal_value  # 元/电池内部kWh；只用于规划，不计入实际电费。
     bounds = [(0,None)]*n + [(0,pmax)]*(2*n) + [(EMIN,EMAX)]*n + [(0,None)]*(s*n)
     if cyclic:
         bounds[4*n-1] = (initial,initial)
+    if final_energy is not None:
+        bounds[4*n-1] = (final_energy,final_energy)
     if base is not None:
         adjust_eq = hstack([ident,csr_matrix((n,3*n+s*n)),-ident,ident],format='csr')
         eq = vstack([eq,adjust_eq],format='csr')
@@ -165,7 +210,7 @@ def execute_reserve(grid, load, pv, initial, forecast_load=None, forecast_pv=Non
     """
     n = len(grid)
     if forecast_load is None or forecast_pv is None:
-        forecast_load, forecast_pv = load, pv
+        raise ValueError('Reserve feedback requires forecasts; future actual values are not a fallback')
     ch, dis, emergency, spill = np.zeros((4, n))
     energy = np.zeros(n + 1)
     energy[0] = initial
@@ -187,8 +232,34 @@ def execute_reserve(grid, load, pv, initial, forecast_load=None, forecast_pv=Non
     return dict(ch=ch, dis=dis, emergency=emergency, spill=spill, energy=energy)
 
 
-def run_case(data,forecast,kind=2,price_mode='fixed',updates=(0,6,12,18),settlement='additive',history_days=14,eta=ETA):
+def plan_at_issue(data, forecast, day, issue, state, base=None, kind=3,
+                  price_mode='fixed', settlement='refund', history_days=14, eta=ETA):
+    """同一决策入口用于实际回测与未发布信息扰动检验。"""
+    start = issue*36
+    prices = (data['one'][:,0] if price_mode=='fixed' else
+              forecast['price'][day] if price_mode=='forecast' else data['price'][day])
+    scenarios = residual_scenarios(data, forecast, day, start, None if kind==2 else issue, history_days)
+    return optimize(scenarios, prices[start:], state, base, settlement, eta=eta)
+
+
+def settlement_cost(plan, grid, emergency, prices, settlement='refund'):
+    """原计划费、上调费、下调净退费、紧急费、总费；功率转换为时段电量。"""
+    if settlement not in ('refund', 'additive'):
+        raise ValueError('Unknown settlement mode')
+    diff = grid-plan
+    values = DT*np.array([np.dot(prices, plan),
+                          np.dot(1.5*prices, np.maximum(diff,0)),
+                          np.dot((-.5 if settlement=='refund' else .5)*prices, np.maximum(-diff,0)),
+                          np.dot(5*prices, emergency)])
+    return np.r_[values, values.sum()]
+
+
+def run_case(data,forecast,kind=2,price_mode='fixed',updates=(0,6,12,18),settlement='refund',history_days=14,eta=ETA,pv_mode='issued'):
     begin=perf_counter()
+    if pv_mode == 'blend':
+        forecast = dict(forecast, issued=forecast['issued_blend'])
+    elif pv_mode != 'issued':
+        raise ValueError('Unknown PV forecast mode')
     arrays={key:np.zeros((365,144)) for key in ('plan','grid','ch','dis','emergency','spill')}
     arrays['energy']=np.zeros((365,145))
     costs=np.zeros((365,5))  # 计划、上调、下调、紧急、合计
@@ -197,14 +268,12 @@ def run_case(data,forecast,kind=2,price_mode='fixed',updates=(0,6,12,18),settlem
     issue_numbers=[0] if kind==2 else [h//6 for h in updates]
     for day in range(365):
         realized_price=data['one'][:,0] if price_mode=='fixed' else data['price'][day]
-        planning_price=forecast['price'][day] if price_mode=='forecast' else realized_price
         arrays['energy'][day,0]=state
         for i,issue in enumerate(issue_numbers):
             start=issue*36
             end=issue_numbers[i+1]*36 if i+1<len(issue_numbers) else 144
-            scenarios=residual_scenarios(data,forecast,day,start,None if kind==2 else issue,history_days)
             base=arrays['plan'][day,start:] if start else None
-            solution=optimize(scenarios,planning_price[start:],state,base,settlement,eta=eta)
+            solution=plan_at_issue(data,forecast,day,issue,state,base,kind,price_mode,settlement,history_days,eta)
             lp_seconds+=solution['seconds']; solves+=1
             max_eq=max(max_eq,solution['residual_eq']);max_ub=max(max_ub,solution['residual_ub'])
             if start==0:
@@ -216,14 +285,9 @@ def run_case(data,forecast,kind=2,price_mode='fixed',updates=(0,6,12,18),settlem
                 arrays[key][day,start:end]=actual[key]
             arrays['energy'][day,start:end+1]=actual['energy']
             state=actual['energy'][-1]
-        diff=arrays['grid'][day]-arrays['plan'][day]
-        costs[day,0]=DT*np.dot(realized_price,arrays['plan'][day])
-        costs[day,1]=DT*np.dot(1.5*realized_price,np.maximum(diff,0))
-        costs[day,2]=DT*np.dot((.5 if settlement=='additive' else -.5)*realized_price,np.maximum(-diff,0))
-        costs[day,3]=DT*np.dot(5*realized_price,arrays['emergency'][day])
-        costs[day,4]=np.sum(costs[day,:4])
+        costs[day]=settlement_cost(arrays['plan'][day],arrays['grid'][day],arrays['emergency'][day],realized_price,settlement)
     arrays['costs']=costs
-    info=dict(kind=kind,price_mode=price_mode,updates=updates,settlement=settlement,history_days=history_days,eta=eta,
+    info=dict(kind=kind,price_mode=price_mode,updates=updates,settlement=settlement,history_days=history_days,eta=eta,pv_mode=pv_mode,
               seconds=perf_counter()-begin,lp_seconds=lp_seconds,solves=solves,max_eq_residual=max_eq,max_ub_violation=max_ub)
     audit(data,arrays,eta)
     return arrays,info
